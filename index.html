@@ -1,0 +1,1473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Small Block Ford V8 — Specs, Blueprint, Torque &amp; Assembly</title>
+<meta name="description" content="Technical reference for the Ford Windsor small block V8: 221, 260, 289, 302 and 351W specifications, brake horsepower, blueprint dimensions, torque values and a 302 assembly sequence.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&amp;family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#06080d; --bg-2:#0a0e16;
+    --panel:#0d131d; --panel-2:#111927;
+    --line:#1c2738; --line-2:#2b3b52;
+    --text:#e9eff8; --muted:#94a6bd; --dim:#7d90a8;
+    --cyan:#22d3ee; --blue:#3b82f6; --amber:#f5a524; --red:#f05d5e; --green:#3ddc97;
+    --font-display:'Barlow Condensed','Arial Narrow',Impact,sans-serif;
+    --font-body:'Inter',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+    --font-mono:'JetBrains Mono',ui-monospace,SFMono-Regular,Consolas,monospace;
+    --r:14px; --shadow:0 24px 60px -30px #000;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth;scroll-padding-top:88px}
+  body{
+    margin:0;color:var(--text);font-family:var(--font-body);font-size:15px;line-height:1.6;
+    -webkit-font-smoothing:antialiased;overflow-x:hidden;
+    background:
+      radial-gradient(1000px 620px at 12% -12%,rgba(34,211,238,.09),transparent 62%),
+      radial-gradient(900px 520px at 92% -4%,rgba(59,130,246,.10),transparent 60%),
+      linear-gradient(180deg,var(--bg),var(--bg-2) 70%,var(--bg));
+  }
+  body::before{
+    content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+    background-image:linear-gradient(rgba(86,126,176,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(86,126,176,.05) 1px,transparent 1px);
+    background-size:48px 48px;
+    -webkit-mask-image:radial-gradient(circle at 50% 18%,#000 0%,transparent 78%);
+    mask-image:radial-gradient(circle at 50% 18%,#000 0%,transparent 78%);
+  }
+  .skip{position:absolute;left:-999px;top:0;z-index:200;background:var(--cyan);color:#041016;padding:10px 16px;font-weight:700}
+  .skip:focus{left:12px;top:12px}
+  a{color:var(--cyan);text-decoration:none}
+  a:hover{text-decoration:underline}
+  .nav-link:focus-visible,.icon-btn:focus-visible,.fbtn:focus-visible,.rt:focus-visible,.reset:focus-visible,.jump:focus-visible,.brand:focus-visible,.sources a:focus-visible,.hotspot:focus-visible{outline:2px solid var(--cyan);outline-offset:2px;border-radius:6px}
+  button{font:inherit;color:inherit}
+  .mono{font-family:var(--font-mono)}
+  .wrap{max-width:1240px;margin:0 auto;padding:0 24px;position:relative;z-index:1}
+  .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+
+  /* top bar */
+  .scrollbar{position:fixed;top:0;left:0;height:2px;width:0;background:linear-gradient(90deg,var(--blue),var(--cyan));z-index:120;box-shadow:0 0 12px rgba(34,211,238,.6)}
+  .topbar{position:sticky;top:0;z-index:100;background:rgba(6,8,13,.86);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid var(--line)}
+  .nav-inner{max-width:1240px;margin:0 auto;padding:0 24px;height:64px;display:flex;align-items:center;gap:22px}
+  .brand{display:flex;align-items:center;gap:10px;flex-shrink:0;text-decoration:none;color:var(--text)}
+  .brand:hover{text-decoration:none}
+  .brand-mark{width:34px;height:34px;border:1px solid rgba(34,211,238,.45);border-radius:8px;display:grid;place-items:center;background:linear-gradient(160deg,rgba(34,211,238,.14),rgba(59,130,246,.06));box-shadow:inset 0 0 18px rgba(34,211,238,.12)}
+  .brand-mark span{font:700 12px var(--font-display);letter-spacing:.06em;color:var(--cyan)}
+  .brand-text b{display:block;font:700 17px/1 var(--font-display);letter-spacing:.12em;text-transform:uppercase}
+  .brand-text small{display:block;font:500 9px var(--font-mono);letter-spacing:.2em;color:var(--dim);margin-top:3px}
+  .nav-links{display:flex;align-items:center;gap:2px;overflow-x:auto;scrollbar-width:none;margin-left:auto}
+  .nav-links::-webkit-scrollbar{display:none}
+  .nav-link{position:relative;padding:8px 11px;font:600 10px var(--font-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--muted);border-radius:6px;white-space:nowrap}
+  .nav-link:hover{color:var(--text);text-decoration:none;background:rgba(255,255,255,.035)}
+  .nav-link.active{color:var(--cyan)}
+  .nav-link.active::after{content:"";position:absolute;left:11px;right:11px;bottom:2px;height:1px;background:var(--cyan);box-shadow:0 0 8px var(--cyan)}
+  .nav-actions{display:flex;align-items:center;gap:8px;flex-shrink:0}
+  .seg{display:inline-flex;border:1px solid var(--line-2);border-radius:8px;overflow:hidden;background:rgba(255,255,255,.02)}
+  .seg button{border:0;background:transparent;padding:7px 10px;font:600 10px var(--font-mono);letter-spacing:.1em;color:var(--dim);cursor:pointer}
+  .seg button.on{background:rgba(34,211,238,.14);color:var(--cyan)}
+  .seg button:focus-visible{outline:2px solid var(--cyan);outline-offset:-2px}
+  .icon-btn{border:1px solid var(--line-2);background:rgba(255,255,255,.02);border-radius:8px;padding:7px 11px;font:600 10px var(--font-mono);letter-spacing:.1em;color:var(--muted);cursor:pointer;display:inline-flex;align-items:center;gap:7px;white-space:nowrap}
+  .icon-btn:hover{color:var(--cyan);border-color:rgba(34,211,238,.4)}
+  .icon-btn svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:1.8}
+  .jump{display:none;border:1px solid var(--line-2);background:var(--panel);color:var(--text);border-radius:8px;padding:7px 9px;font:600 10px var(--font-mono);letter-spacing:.08em}
+
+  /* hero */
+  .hero{padding:70px 0 18px;display:grid;grid-template-columns:1.08fr .92fr;gap:48px;align-items:center}
+  .eyebrow{display:inline-flex;align-items:center;gap:10px;font:600 10px var(--font-mono);letter-spacing:.24em;text-transform:uppercase;color:var(--muted);margin-bottom:20px}
+  .eyebrow i{width:7px;height:7px;border-radius:50%;background:var(--cyan);box-shadow:0 0 14px var(--cyan);animation:pulse 2.6s infinite}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+  h1{font:800 clamp(54px,8.2vw,104px)/.86 var(--font-display);text-transform:uppercase;letter-spacing:.005em;margin:0 0 20px}
+  h1 .grad{background:linear-gradient(100deg,var(--cyan),var(--blue) 55%,#8b5cf6);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 0 24px rgba(34,211,238,.18))}
+  .lede{max-width:620px;font-size:16.5px;color:#c2cfe0;margin:0 0 18px}
+  .hero-meta{display:flex;flex-wrap:wrap;gap:8px 18px;font:500 10.5px var(--font-mono);letter-spacing:.06em;color:var(--dim);margin-bottom:30px}
+  .hero-meta span{display:inline-flex;align-items:center;gap:7px}
+  .hero-meta span::before{content:"";width:4px;height:4px;border-radius:50%;background:var(--line-2)}
+  .selector-label{font:600 9.5px var(--font-mono);letter-spacing:.2em;text-transform:uppercase;color:var(--dim);margin-bottom:9px}
+  .chips{display:flex;flex-wrap:wrap;gap:8px}
+  .chip{position:relative;border:1px solid var(--line-2);background:linear-gradient(180deg,rgba(255,255,255,.035),rgba(255,255,255,.01));border-radius:10px;padding:9px 13px 8px;cursor:pointer;text-align:left;transition:border-color .2s,background .2s,transform .2s}
+  .chip:hover{border-color:rgba(34,211,238,.45);transform:translateY(-1px)}
+  .chip .ci{display:block;font:700 19px/1 var(--font-display);letter-spacing:.03em}
+  .chip .yr{display:block;font:500 8.5px var(--font-mono);letter-spacing:.08em;color:var(--dim);margin-top:4px}
+  .chip.on{border-color:var(--cyan);background:linear-gradient(180deg,rgba(34,211,238,.16),rgba(34,211,238,.04));box-shadow:0 0 0 1px rgba(34,211,238,.18),0 10px 30px -18px var(--cyan)}
+  .chip.on .ci{color:var(--cyan)}
+  .chip.on .yr{color:var(--muted)}
+  .chip:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
+
+  /* gauge */
+  .gauge-card{position:relative;border:1px solid var(--line);border-radius:22px;background:linear-gradient(180deg,rgba(17,25,39,.92),rgba(9,13,20,.96));padding:20px 20px 16px;box-shadow:var(--shadow),inset 0 1px 0 rgba(255,255,255,.04);overflow:hidden}
+  .gauge-card::before{content:"";position:absolute;inset:0;background:radial-gradient(420px 240px at 50% 16%,rgba(34,211,238,.12),transparent 70%);pointer-events:none}
+  .gauge-card::after{content:"";position:absolute;left:16px;right:16px;top:0;height:1px;background:linear-gradient(90deg,transparent,rgba(34,211,238,.5),transparent)}
+  .gauge-top{display:flex;justify-content:space-between;align-items:center;position:relative;z-index:1;font:600 9px var(--font-mono);letter-spacing:.2em;text-transform:uppercase;color:var(--dim)}
+  .badge{display:inline-flex;align-items:center;gap:6px;border:1px solid rgba(245,165,36,.35);background:rgba(245,165,36,.08);color:var(--amber);padding:4px 8px;border-radius:999px;font:600 8.5px var(--font-mono);letter-spacing:.14em}
+  .badge::before{content:"";width:5px;height:5px;border-radius:50%;background:var(--amber)}
+  .gauge-svg{display:block;width:100%;max-width:430px;margin:2px auto -6px;position:relative;z-index:1}
+  #needle{transform-origin:190px 190px;transform-box:view-box;transition:transform .9s cubic-bezier(.16,1,.3,1)}
+  #gaugeArc{transition:stroke-dasharray .9s cubic-bezier(.16,1,.3,1)}
+  .gauge-foot{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;border-top:1px solid var(--line);padding-top:12px;position:relative;z-index:1}
+  .gauge-foot div{text-align:center}
+  .gauge-foot .k{font:600 8px var(--font-mono);letter-spacing:.16em;text-transform:uppercase;color:var(--dim)}
+  .gauge-foot .v{font:600 13px var(--font-mono);color:var(--text);margin-top:3px}
+  .gauge-foot .v.amber{color:var(--amber)}
+
+  /* kpis */
+  .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:34px 0 0}
+  .kpi{position:relative;background:linear-gradient(180deg,rgba(17,25,39,.8),rgba(11,16,25,.9));border:1px solid var(--line);border-radius:var(--r);padding:15px 16px 13px;box-shadow:var(--shadow);overflow:hidden}
+  .kpi::before{content:"";position:absolute;left:0;right:0;top:0;height:2px;background:var(--k,var(--cyan));opacity:.85}
+  .kpi .label{font:600 8.5px var(--font-mono);letter-spacing:.18em;text-transform:uppercase;color:var(--dim)}
+  .kpi .val{font:700 27px/1 var(--font-display);letter-spacing:.02em;margin:8px 0 3px;font-variant-numeric:tabular-nums}
+  .kpi .sub{font:500 9.5px var(--font-mono);color:var(--dim);letter-spacing:.04em}
+  #kpiFiring{font-size:22px}
+
+  /* sections */
+  .sec{padding:76px 0 0;position:relative;z-index:1}
+  .sec-head{display:flex;align-items:flex-end;justify-content:space-between;gap:28px;margin-bottom:22px;border-top:1px solid var(--line);padding-top:26px}
+  .kicker{display:flex;align-items:center;gap:10px;font:600 9.5px var(--font-mono);letter-spacing:.22em;text-transform:uppercase;color:var(--cyan);margin-bottom:9px}
+  .kicker::before{content:"";width:22px;height:1px;background:var(--cyan);box-shadow:0 0 8px var(--cyan)}
+  h2{font:700 clamp(30px,4.4vw,46px)/.98 var(--font-display);text-transform:uppercase;letter-spacing:.01em;margin:0}
+  .sec-sub{max-width:740px;color:var(--muted);font-size:14.5px;margin:9px 0 0}
+  .sec-head .aside{font:500 10px var(--font-mono);color:var(--dim);text-align:right;line-height:1.9;white-space:nowrap}
+  .panel{background:linear-gradient(180deg,rgba(17,25,39,.78),rgba(10,15,23,.9));border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow)}
+  .panel-pad{padding:20px}
+
+  /* timeline */
+  .timeline{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(210px,1fr);gap:12px;overflow-x:auto;padding:4px 4px 14px;scroll-snap-type:x mandatory}
+  .era{scroll-snap-align:start;position:relative;border:1px solid var(--line);border-radius:var(--r);padding:16px 15px 15px;min-height:184px;background:linear-gradient(180deg,rgba(17,25,39,.72),rgba(10,15,23,.9));box-shadow:var(--shadow)}
+  .era::before{content:"";position:absolute;left:15px;top:0;width:34px;height:2px;background:var(--cyan);opacity:.8}
+  .era.minor{opacity:.72;border-style:dashed}
+  .era .year{font:700 30px/1 var(--font-display);letter-spacing:.02em}
+  .era .ci{font:600 10px var(--font-mono);letter-spacing:.14em;color:var(--cyan);text-transform:uppercase;margin-top:3px}
+  .era p{font-size:12px;color:var(--muted);line-height:1.55;margin:11px 0 0}
+  .era .hp{font:600 9.5px var(--font-mono);color:var(--amber);margin-top:10px;letter-spacing:.04em}
+
+  /* tables */
+  .table-wrap{overflow:auto;border:1px solid var(--line);border-radius:var(--r);background:rgba(8,12,19,.65);box-shadow:var(--shadow)}
+  table{border-collapse:collapse;width:100%}
+  .spec-table{min-width:940px}
+  caption{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+  th,td{padding:12px 14px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+  thead th{position:sticky;top:0;z-index:2;background:#0a0f18;font:600 9.5px var(--font-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--muted);white-space:nowrap}
+  thead th:first-child{z-index:3}
+  tbody th{position:sticky;left:0;z-index:1;background:#0a0f18;font:500 10px var(--font-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);white-space:nowrap;min-width:150px}
+  tbody td{font:500 12px var(--font-mono);color:var(--text);white-space:nowrap}
+  tbody tr:hover td{background:rgba(255,255,255,.018)}
+  tbody tr:hover th{color:var(--text)}
+  th.is-active{color:var(--cyan)!important;background:rgba(34,211,238,.07)!important}
+  td.is-active{background:rgba(34,211,238,.055)!important;color:#d9fbff}
+  .table-note{font:500 9.5px var(--font-mono);color:var(--dim);margin-top:9px;line-height:1.7}
+  .table-note b{color:var(--muted);font-weight:600}
+  .tag{display:inline-block;font:600 8.5px var(--font-mono);letter-spacing:.1em;padding:2px 6px;border-radius:4px;background:rgba(34,211,238,.1);color:var(--cyan);border:1px solid rgba(34,211,238,.2);margin-left:6px;vertical-align:middle}
+
+  /* power */
+  .two-col{display:grid;grid-template-columns:1fr 1.12fr;gap:14px;align-items:start}
+  .two-col>*,.bp-grid>*,.ref-grid>*{min-width:0}
+  .explain p{font-size:13.5px;color:var(--muted);margin:0 0 12px}
+  .explain p strong{color:var(--text);font-weight:600}
+  .stat-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:16px 0 0}
+  .stat{border:1px solid var(--line);border-radius:9px;padding:11px 12px;background:rgba(255,255,255,.018)}
+  .stat .k{font:600 8.5px var(--font-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--dim)}
+  .stat .v{font:600 14px var(--font-display);letter-spacing:.04em;margin-top:3px}
+  .stat .v.cyan{color:var(--cyan)} .stat .v.amber{color:var(--amber)}
+  .bars-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:6px}
+  .bars-head h3{font:600 15px var(--font-display);letter-spacing:.06em;text-transform:uppercase;margin:0}
+  .rating-tabs{display:inline-flex;border:1px solid var(--line-2);border-radius:8px;overflow:hidden}
+  .rating-tabs button{border:0;background:transparent;padding:6px 9px;font:600 8.5px var(--font-mono);letter-spacing:.1em;color:var(--dim);cursor:pointer;text-transform:uppercase}
+  .rating-tabs button.on{background:rgba(34,211,238,.14);color:var(--cyan)}
+  .bar-row{display:grid;grid-template-columns:168px 1fr 104px;gap:12px;align-items:center;padding:8px 0;border-bottom:1px solid rgba(28,39,56,.65)}
+  .bar-row:last-child{border-bottom:0}
+  .bar-label{font-size:11.5px;color:var(--text);line-height:1.25}
+  .bar-label small{display:block;font:500 8.5px var(--font-mono);color:var(--dim);margin-top:2px;letter-spacing:.04em}
+  .bar-tracks{display:grid;gap:4px}
+  .bar-track{height:6px;background:#141d2b;border-radius:99px;overflow:hidden}
+  .bar-fill{height:100%;border-radius:99px;width:var(--w);background:linear-gradient(90deg,var(--blue),var(--cyan));box-shadow:0 0 12px rgba(34,211,238,.3)}
+  .bar-fill.tq{background:linear-gradient(90deg,#b45309,var(--amber));box-shadow:0 0 12px rgba(245,165,36,.25)}
+  .bar-vals{text-align:right;font:600 9.5px var(--font-mono);color:var(--muted);line-height:1.7}
+  .bar-vals b{color:var(--cyan);font-weight:600}
+  .bar-vals i{color:var(--amber);font-style:normal}
+  .legend{display:flex;gap:14px;font:500 8.5px var(--font-mono);color:var(--dim);letter-spacing:.08em;text-transform:uppercase;margin-top:10px}
+  .legend span{display:inline-flex;align-items:center;gap:5px}
+  .legend i{width:14px;height:3px;border-radius:2px;display:inline-block}
+  .caveat{font:500 9.5px var(--font-mono);color:var(--dim);line-height:1.7;margin-top:12px;border-left:1px solid var(--line-2);padding-left:10px}
+
+  /* blueprint */
+  .bp-grid{display:grid;grid-template-columns:1.18fr .82fr;gap:14px;align-items:start}
+  .drawing{padding:8px 8px 4px;position:relative;overflow:hidden}
+  .drawing .corner{position:absolute;width:14px;height:14px;border-color:rgba(34,211,238,.4);border-style:solid;pointer-events:none}
+  .drawing .c1{left:10px;top:10px;border-width:1px 0 0 1px}
+  .drawing .c2{right:10px;top:10px;border-width:1px 1px 0 0}
+  .drawing .c3{left:10px;bottom:10px;border-width:0 0 1px 1px}
+  .drawing .c4{right:10px;bottom:10px;border-width:0 1px 1px 0}
+  .bp-svg{display:block;width:100%;height:auto}
+  .hotspot{cursor:pointer;outline:none}
+  .hotspot circle{fill:#0a1019;stroke:var(--cyan);stroke-width:1.4;transition:fill .2s}
+  .hotspot text{fill:var(--cyan);font:600 9px var(--font-mono);pointer-events:none;transition:fill .2s}
+  .hotspot:hover circle,.hotspot:focus circle,.hotspot.active circle{fill:var(--cyan)}
+  .hotspot:hover text,.hotspot:focus text,.hotspot.active text{fill:#041016}
+  .bp-detail{margin-top:4px;border-top:1px solid var(--line);padding:14px 12px 6px}
+  .bp-detail .k{font:600 8.5px var(--font-mono);letter-spacing:.18em;text-transform:uppercase;color:var(--cyan)}
+  .bp-detail h3{font:700 21px/1.1 var(--font-display);letter-spacing:.03em;text-transform:uppercase;margin:4px 0 6px}
+  .bp-detail p{font-size:12.5px;color:var(--muted);margin:0 0 8px;min-height:54px}
+  .bp-detail .spec{display:inline-block;font:600 10px var(--font-mono);color:var(--amber);background:rgba(245,165,36,.07);border:1px solid rgba(245,165,36,.2);padding:4px 8px;border-radius:5px}
+  .mini{padding:14px 15px;margin-bottom:12px}
+  .mini:last-child{margin-bottom:0}
+  .mini-head{display:flex;justify-content:space-between;align-items:baseline;font:600 8.5px var(--font-mono);letter-spacing:.16em;text-transform:uppercase;color:var(--dim);margin-bottom:10px}
+  .mini-head b{color:var(--text);font-weight:600;letter-spacing:.1em}
+  .cmp-row{display:grid;grid-template-columns:44px 1fr 58px;gap:9px;align-items:center;margin-bottom:7px}
+  .cmp-row span{font:600 9px var(--font-mono);color:var(--muted)}
+  .cmp-row b{font:600 9.5px var(--font-mono);color:var(--text);text-align:right}
+  .cmp-track{height:7px;background:#141d2b;border-radius:99px;overflow:hidden}
+  .cmp-track i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,var(--blue),var(--cyan))}
+  .cmp-track i.amber{background:linear-gradient(90deg,#b45309,var(--amber))}
+  .mini-note{font:500 9px var(--font-mono);color:var(--dim);margin:7px 0 0;line-height:1.6}
+  .journal-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .journal{display:flex;align-items:center;gap:9px;border:1px solid var(--line);border-radius:8px;padding:7px 8px;background:rgba(255,255,255,.015)}
+  .journal svg{width:52px;height:52px;flex-shrink:0}
+  .journal .t{font:600 8px var(--font-mono);color:var(--dim);letter-spacing:.06em;line-height:1.4}
+  .journal .t b{display:block;font:600 11px var(--font-mono);color:var(--text);letter-spacing:0}
+
+  /* torque */
+  .toolbar{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-bottom:12px}
+  .filter{display:inline-flex;gap:5px;flex-wrap:wrap}
+  .fbtn{border:1px solid var(--line-2);background:rgba(255,255,255,.02);color:var(--muted);border-radius:7px;padding:6px 10px;font:600 8.5px var(--font-mono);letter-spacing:.1em;text-transform:uppercase;cursor:pointer}
+  .fbtn:hover{border-color:rgba(34,211,238,.35);color:var(--text)}
+  .fbtn.on{background:rgba(34,211,238,.13);border-color:rgba(34,211,238,.4);color:var(--cyan)}
+  .search{position:relative;margin-left:auto}
+  .search input{width:210px;background:rgba(255,255,255,.025);border:1px solid var(--line-2);border-radius:7px;padding:7px 10px 7px 30px;color:var(--text);font:500 11px var(--font-mono);outline:none}
+  .search input:focus{border-color:rgba(34,211,238,.5);box-shadow:0 0 0 2px rgba(34,211,238,.12)}
+  .search svg{position:absolute;left:9px;top:50%;transform:translateY(-50%);width:13px;height:13px;stroke:var(--dim);fill:none;stroke-width:2}
+  .torque-table{min-width:900px}
+  .torque-table td:nth-child(2),.torque-table td:nth-child(3),.torque-table td:nth-child(4){font-variant-numeric:tabular-nums}
+  .torque-table td:last-child{white-space:normal;font-family:var(--font-body);font-size:11.5px;color:var(--dim);min-width:190px;line-height:1.45}
+  .tq-btn{border:1px solid transparent;background:transparent;color:var(--text);font:600 11.5px var(--font-mono);padding:3px 5px;border-radius:5px;cursor:copy;transition:background .15s,border-color .15s}
+  .tq-btn:hover{background:rgba(34,211,238,.1);border-color:rgba(34,211,238,.25);color:var(--cyan)}
+  .tq-btn:focus-visible{outline:2px solid var(--cyan);outline-offset:1px}
+  .tq-btn.wide{color:var(--amber)}
+  .tq-btn.wide:hover{background:rgba(245,165,36,.08);border-color:rgba(245,165,36,.3);color:var(--amber)}
+  .torque-table tr[data-diff="1"] td{background:rgba(245,165,36,.028)}
+  .torque-table tr[data-diff="1"]:hover td{background:rgba(245,165,36,.05)}
+  .torque-table tr.hide{display:none}
+  .warn-box{display:flex;gap:12px;border:1px solid rgba(240,93,94,.28);background:rgba(240,93,94,.055);border-radius:10px;padding:12px 14px;margin-bottom:14px}
+  .warn-box .ico{color:var(--red);font:700 14px var(--font-mono);line-height:1.3}
+  .warn-box p{margin:0;font-size:11.5px;color:#e7b7b8;line-height:1.6}
+  .warn-box b{color:#ffd0d1}
+
+  /* assembly */
+  .progress-card{display:flex;align-items:center;gap:16px;padding:13px 16px;margin-bottom:14px}
+  .progress-card .lbl{font:600 8.5px var(--font-mono);letter-spacing:.16em;text-transform:uppercase;color:var(--dim);white-space:nowrap}
+  .progress-track{flex:1;height:6px;background:#141d2b;border-radius:99px;overflow:hidden}
+  .progress-fill{height:100%;width:0;border-radius:99px;background:linear-gradient(90deg,var(--blue),var(--cyan));box-shadow:0 0 12px rgba(34,211,238,.4);transition:width .35s}
+  .progress-count{font:600 10px var(--font-mono);color:var(--cyan);white-space:nowrap}
+  .reset{border:0;background:transparent;color:var(--dim);font:500 9px var(--font-mono);letter-spacing:.08em;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+  .reset:hover{color:var(--muted)}
+  .stage{border:1px solid var(--line);border-radius:12px;background:linear-gradient(180deg,rgba(17,25,39,.62),rgba(10,15,23,.85));margin-bottom:9px;overflow:hidden;transition:border-color .2s}
+  .stage[open]{border-color:var(--line-2);background:linear-gradient(180deg,rgba(17,25,39,.82),rgba(10,15,23,.92))}
+  .stage summary{list-style:none;cursor:pointer;display:grid;grid-template-columns:40px 1fr auto 20px;gap:13px;align-items:center;padding:14px 17px}
+  .stage summary::-webkit-details-marker{display:none}
+  .stage summary:focus-visible{outline:2px solid var(--cyan);outline-offset:-2px}
+  .stage .num{width:32px;height:32px;border-radius:8px;border:1px solid var(--line-2);display:grid;place-items:center;font:700 13px var(--font-display);color:var(--cyan);background:rgba(34,211,238,.05)}
+  .stage .title{font:600 14.5px var(--font-body);letter-spacing:.01em}
+  .stage .meta{font:500 8.5px var(--font-mono);color:var(--dim);letter-spacing:.1em;text-transform:uppercase;margin-top:2px}
+  .stage .check{width:17px;height:17px;accent-color:var(--cyan);cursor:pointer}
+  .stage .chev{width:15px;height:15px;stroke:var(--dim);fill:none;stroke-width:2;transition:transform .25s}
+  .stage[open] .chev{transform:rotate(180deg);stroke:var(--cyan)}
+  .stage-body{padding:0 18px 18px 70px;border-top:1px solid rgba(28,39,56,.6);margin-top:0;padding-top:14px}
+  .stage-body ol{margin:0;padding-left:18px}
+  .stage-body li{font-size:12.5px;color:#c4d1e2;margin-bottom:7px;line-height:1.55}
+  .stage-body li::marker{color:var(--cyan);font-family:var(--font-mono);font-size:10px}
+  .specs{display:flex;flex-wrap:wrap;gap:7px;margin:13px 0 0}
+  .spec{font:600 9.5px var(--font-mono);color:var(--cyan);background:rgba(34,211,238,.07);border:1px solid rgba(34,211,238,.18);padding:4px 8px;border-radius:5px}
+  .why{border-left:2px solid var(--amber);padding:6px 0 6px 11px;color:var(--muted);font-size:11.5px;margin:13px 0 0;line-height:1.6}
+  .why b{color:var(--amber);font-weight:600}
+  .seq-wrap{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px}
+  .seq{border:1px solid var(--line);border-radius:9px;padding:10px 10px 7px;background:rgba(4,8,14,.5)}
+  .seq svg{display:block;width:100%;height:auto}
+  .seq .cap{font:500 8.5px var(--font-mono);color:var(--dim);letter-spacing:.05em;margin-top:4px;line-height:1.5}
+
+  /* reference */
+  .ref-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:14px;align-items:start}
+  .fo-card{padding:16px}
+  .fo-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .fo{border:1px solid var(--line);border-radius:9px;padding:9px;background:rgba(4,8,14,.45)}
+  .fo svg{display:block;width:100%;height:auto}
+  .fo h4{font:600 11px var(--font-display);letter-spacing:.08em;text-transform:uppercase;margin:2px 0 0;color:var(--text)}
+  .fo .order{font:600 8.5px var(--font-mono);color:var(--cyan);letter-spacing:.02em;margin-top:2px;word-spacing:2px}
+  .fo .note{font:500 8px var(--font-mono);color:var(--dim);margin-top:2px}
+  .quick-table{min-width:0;width:100%}
+  .quick-table th,.quick-table td{padding:8px 10px;font-size:10.5px}
+  .quick-table th{position:static;background:transparent}
+  .quick-table tbody th{position:static;background:transparent;min-width:0}
+  .quick-table td{white-space:normal}
+  .quick-table td:last-child{font-family:var(--font-mono);color:var(--cyan);white-space:nowrap}
+
+  /* sources */
+  .sources{display:grid;grid-template-columns:1fr 1fr;gap:8px 22px;padding:20px}
+  .sources a{display:block;font-size:12px;color:var(--muted);padding:7px 0;border-bottom:1px solid rgba(28,39,56,.6);line-height:1.45}
+  .sources a:hover{color:var(--cyan);text-decoration:none}
+  .sources a b{display:block;color:var(--text);font-weight:500;font-size:12.5px;margin-bottom:1px}
+  .disclaimer{border:1px solid rgba(245,165,36,.25);background:rgba(245,165,36,.05);border-radius:var(--r);padding:16px 18px;margin-top:14px}
+  .disclaimer p{margin:0;font-size:11.5px;color:#d8c49c;line-height:1.65}
+  .disclaimer b{color:var(--amber)}
+
+  footer{border-top:1px solid var(--line);margin-top:70px;padding:26px 0 40px;position:relative;z-index:1}
+  .foot-inner{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;font:500 9.5px var(--font-mono);color:var(--dim);letter-spacing:.06em}
+  .foot-inner b{color:var(--muted);font-weight:600}
+
+  /* toast */
+  .toast{position:fixed;left:50%;bottom:26px;transform:translate(-50%,20px);background:#0c1420;border:1px solid rgba(34,211,238,.4);color:var(--cyan);padding:9px 15px;border-radius:8px;font:600 10px var(--font-mono);letter-spacing:.06em;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;z-index:150;box-shadow:0 20px 50px -20px #000}
+  .toast.show{opacity:1;transform:translate(-50%,0)}
+
+  /* print card */
+  .print-card{display:none}
+  @media print{
+    @page{size:letter portrait;margin:12mm}
+    body{background:#fff;color:#111;font-size:11px}
+    body::before,.scrollbar,.topbar,.skip,.hero,.kpis,.sec,.toast,footer:not(.pc-foot),#main{display:none!important}
+    .print-card{display:block!important;color:#111;font-family:'Inter',Arial,sans-serif}
+    .pc-head{display:flex;justify-content:space-between;gap:18px;border-bottom:2px solid #111;padding-bottom:8px;margin-bottom:10px}
+    .pc-kicker{font:600 8px 'JetBrains Mono',monospace;letter-spacing:.18em;text-transform:uppercase;color:#555}
+    .pc-head h1{font:700 24px/1 'Barlow Condensed',Arial,sans-serif;text-transform:uppercase;margin:3px 0 2px}
+    .pc-head p{font-size:9px;color:#555;margin:0}
+    .pc-fo{text-align:right;white-space:nowrap}
+    .pc-fo span{display:block;font:600 7px 'JetBrains Mono',monospace;letter-spacing:.16em;text-transform:uppercase;color:#555}
+    .pc-fo b{display:block;font:700 17px 'JetBrains Mono',monospace;margin:2px 0}
+    .pc-fo small{font-size:7.5px;color:#555}
+    .pc-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:16px}
+    .pc-block h2{font:700 11px 'Barlow Condensed',Arial,sans-serif;letter-spacing:.12em;text-transform:uppercase;border-bottom:1px solid #bbb;padding-bottom:2px;margin:0 0 5px}
+    .pc-block table{border-collapse:collapse;width:100%}
+    .pc-block th,.pc-block td{padding:3.5px 4px;border-bottom:1px solid #ddd;text-align:left;font-size:9px;white-space:nowrap}
+    .pc-block th{font-weight:600;color:#333;width:34%}
+    .pc-block td{font-family:'JetBrains Mono',monospace;font-size:9px;color:#000;width:16%}
+    .pc-seq{font-size:8.5px;line-height:1.55;margin:4px 0;color:#222}
+    .pc-foot{display:flex;justify-content:space-between;gap:12px;border-top:2px solid #111;margin-top:12px;padding-top:6px;font:600 7.5px 'JetBrains Mono',monospace;color:#444}
+    .pc-foot span:first-child{max-width:78%}
+  }
+
+  @media (max-width:1080px){
+    .hero{grid-template-columns:1fr;gap:34px}
+    .gauge-card{max-width:460px;margin:0 auto;width:100%}
+    .two-col,.bp-grid,.ref-grid{grid-template-columns:1fr}
+    .bp-side{display:grid;grid-template-columns:1fr 1fr;gap:12px;align-items:start}
+    .bp-side .mini{margin-bottom:0}
+    .sources{grid-template-columns:1fr}
+  }
+  @media (max-width:900px){
+    .nav-links{display:none}
+    .jump{display:block}
+    .kpis{grid-template-columns:1fr 1fr}
+    .sec-head{flex-direction:column;align-items:flex-start;gap:12px}
+    .sec-head .aside{text-align:left}
+  }
+  @media (max-width:680px){
+    .wrap,.nav-inner{padding-left:16px;padding-right:16px}
+    .nav-inner{gap:10px}
+    .brand-text{display:none}
+    .jump{max-width:92px}
+    h1{font-size:46px}
+    .eyebrow{letter-spacing:.18em}
+    .topbar .icon-btn span{display:none}
+    .hero{padding-top:44px}
+    .kpis{grid-template-columns:1fr 1fr;gap:9px}
+    .kpi .val{font-size:23px}
+    #kpiFiring{font-size:18px}
+    .bar-row{grid-template-columns:112px 1fr;gap:8px}
+    .bar-vals{grid-column:2;text-align:left;display:flex;gap:10px}
+    .seq-wrap{grid-template-columns:1fr}
+    .fo-grid{grid-template-columns:1fr}
+    .stage summary{grid-template-columns:32px 1fr 18px;gap:10px;padding:12px 13px}
+    .stage .check{grid-column:2;grid-row:2;margin-top:4px}
+    .stage .chev{grid-column:3;grid-row:1}
+    .stage-body{padding-left:16px;padding-right:13px}
+    .stage .meta{display:none}
+    .search{margin-left:0;width:100%}
+    .search input{width:100%}
+    .bp-side{grid-template-columns:1fr}
+    .sources{padding:15px}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *,*::before,*::after{animation:none!important;transition:none!important}
+    html{scroll-behavior:auto}
+  }
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<div class="scrollbar" id="scrollbar"></div>
+
+<header class="topbar">
+  <div class="nav-inner">
+    <a class="brand" href="#top" aria-label="Small Block Ford technical reference, back to top">
+      <span class="brand-mark" aria-hidden="true"><span>V8</span></span>
+      <span class="brand-text"><b>SBF // Tech</b><small>Windsor Reference</small></span>
+    </a>
+    <nav class="nav-links" aria-label="Sections">
+      <a class="nav-link" href="#family">Family</a>
+      <a class="nav-link" href="#specs">Specs</a>
+      <a class="nav-link" href="#power">Power</a>
+      <a class="nav-link" href="#blueprint">Blueprint</a>
+      <a class="nav-link" href="#torque">Torque</a>
+      <a class="nav-link" href="#assembly">Assembly</a>
+      <a class="nav-link" href="#reference">Reference</a>
+    </nav>
+    <div class="nav-actions">
+      <select class="jump" id="jump" aria-label="Jump to section">
+        <option value="#family">Family</option>
+        <option value="#specs">Specs</option>
+        <option value="#power">Power</option>
+        <option value="#blueprint">Blueprint</option>
+        <option value="#torque">Torque</option>
+        <option value="#assembly">Assembly</option>
+        <option value="#reference">Reference</option>
+      </select>
+      <div class="seg" role="group" aria-label="Units">
+        <button type="button" class="unit-btn on" data-units="sae" aria-pressed="true">SAE</button>
+        <button type="button" class="unit-btn" data-units="metric" aria-pressed="false">Metric</button>
+      </div>
+      <button type="button" class="icon-btn" id="printBtn" title="Print the pit card">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9V3h12v6M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+        <span>Pit card</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+  <section class="wrap hero" id="top">
+    <div>
+      <div class="eyebrow"><i></i>Windsor family · 1962–2001</div>
+      <h1>Small Block<br>Ford <span class="grad">V8</span></h1>
+      <p class="lede">One architecture, five displacements, and nearly every Ford rear-wheel-drive platform for four decades. The specs, blueprint dimensions, torque values, and a 302 build sequence — without the forum noise.</p>
+      <div class="hero-meta">
+        <span>90° OHV pushrod V8</span>
+        <span>Iron block &amp; heads</span>
+        <span>221 · 260 · 289 · 302 · 351W</span>
+      </div>
+      <div class="selector-label">Select engine</div>
+      <div class="chips" role="group" aria-label="Select an engine">
+        <button type="button" class="chip" data-engine="221" aria-pressed="false"><span class="ci">221</span><span class="yr">1962–63</span></button>
+        <button type="button" class="chip" data-engine="260" aria-pressed="false"><span class="ci">260</span><span class="yr">1962–64</span></button>
+        <button type="button" class="chip" data-engine="289" aria-pressed="false"><span class="ci">289</span><span class="yr">1963–68</span></button>
+        <button type="button" class="chip on" data-engine="302" aria-pressed="true"><span class="ci">302</span><span class="yr">1968–2001</span></button>
+        <button type="button" class="chip" data-engine="351" aria-pressed="false"><span class="ci">351W</span><span class="yr">1969–96</span></button>
+      </div>
+      <p class="sr-only" id="engineStatus" aria-live="polite"></p>
+    </div>
+
+    <div class="gauge-card" aria-label="Factory power rating for the selected engine">
+      <div class="gauge-top">
+        <span>Factory rating</span>
+        <span class="badge" id="ratingBadge">NET</span>
+      </div>
+      <svg class="gauge-svg" viewBox="0 0 380 300" role="img" aria-labelledby="gaugeTitle gaugeDesc">
+        <title id="gaugeTitle">Factory brake horsepower gauge</title>
+        <desc id="gaugeDesc">Needle shows the selected engine's factory rating against a 320 horsepower scale.</desc>
+        <defs>
+          <linearGradient id="gaugeGrad" x1="0" y1="1" x2="1" y2="0">
+            <stop offset="0" stop-color="#3b82f6"/><stop offset=".55" stop-color="#22d3ee"/><stop offset="1" stop-color="#f5a524"/>
+          </linearGradient>
+          <filter id="glow"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+        </defs>
+        <path d="M77.4 255 A130 130 0 1 1 302.6 255" fill="none" stroke="#16202f" stroke-width="14" stroke-linecap="round"/>
+        <path id="gaugeArc" d="M77.4 255 A130 130 0 1 1 302.6 255" fill="none" stroke="url(#gaugeGrad)" stroke-width="14" stroke-linecap="round" pathLength="100" stroke-dasharray="0 100" filter="url(#glow)"/>
+        <g id="gaugeTicks"></g>
+        <line id="needle" x1="190" y1="190" x2="190" y2="74" stroke="#e9eff8" stroke-width="2.2" stroke-linecap="round"/>
+        <circle cx="190" cy="190" r="9" fill="#0a1019" stroke="#22d3ee" stroke-width="2"/>
+        <circle cx="190" cy="190" r="3" fill="#22d3ee"/>
+        <text id="gaugeHp" x="190" y="236" text-anchor="middle" fill="#e9eff8" font-family="'Barlow Condensed',sans-serif" font-size="58" font-weight="700">225</text>
+        <text id="gaugeUnit" x="190" y="256" text-anchor="middle" fill="#5d7089" font-family="'JetBrains Mono',monospace" font-size="9" letter-spacing="3">BHP</text>
+        <text id="gaugeRpm" x="190" y="276" text-anchor="middle" fill="#94a6bd" font-family="'JetBrains Mono',monospace" font-size="9">@ 4,600 RPM</text>
+      </svg>
+      <div class="gauge-foot">
+        <div><div class="k">Torque</div><div class="v amber" id="gaugeTq">300 lb-ft</div></div>
+        <div><div class="k">Years</div><div class="v" id="gaugeYears">1968–2001</div></div>
+        <div><div class="k">Rating</div><div class="v" id="gaugeRating">SAE net</div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="wrap" aria-label="Selected engine quick stats">
+    <div class="kpis">
+      <div class="kpi" style="--k:var(--cyan)"><div class="label">Bore</div><div class="val" id="kpiBore">4.000 in</div><div class="sub" id="kpiBoreSub">101.6 mm</div></div>
+      <div class="kpi" style="--k:var(--blue)"><div class="label">Stroke</div><div class="val" id="kpiStroke">3.000 in</div><div class="sub" id="kpiStrokeSub">76.2 mm</div></div>
+      <div class="kpi" style="--k:var(--amber)"><div class="label">Deck height</div><div class="val" id="kpiDeck">8.206 in</div><div class="sub" id="kpiDeckSub">208.4 mm</div></div>
+      <div class="kpi" style="--k:var(--green)"><div class="label">Firing order</div><div class="val" id="kpiFiring">1-5-4-2-6-3-7-8</div><div class="sub" id="kpiFiringSub">Standard Windsor</div></div>
+    </div>
+  </section>
+
+  <section class="wrap sec" id="family">
+    <div class="sec-head">
+      <div>
+        <div class="kicker">01 / Family</div>
+        <h2>Five displacements, one architecture</h2>
+        <p class="sec-sub">Every Windsor shares the same 4.380 in bore spacing, bellhousing pattern, and motor-mount footprint. What changed was the deck height, the stroke, and how well it breathed.</p>
+      </div>
+      <div class="aside">1962 → 2001<br>≈ 40 years in production</div>
+    </div>
+    <div class="timeline" role="list" aria-label="Windsor family timeline">
+      <article class="era" role="listitem"><div class="year">1962</div><div class="ci">221 ci</div><p>The original Windsor. Short-deck 3.6 L, two-barrel, built for Fairlanes and Falcons.</p><div class="hp">115–145 hp · 3.500 × 2.870</div></article>
+      <article class="era" role="listitem"><div class="year">1962</div><div class="ci">260 ci</div><p>Bored to 3.80 in. A three-year stepping stone to the 289, mostly forgotten today.</p><div class="hp">164 hp · 3.800 × 2.870</div></article>
+      <article class="era" role="listitem"><div class="year">1963</div><div class="ci">289 ci</div><p>4.00 in bore, 2.87 in stroke. The HiPo K-code's 271 hp made the Mustang a legend.</p><div class="hp">195–271 hp · 4.000 × 2.870</div></article>
+      <article class="era" role="listitem"><div class="year">1968</div><div class="ci">302 ci</div><p>3.00 in stroke on the same 8.206 in deck. The 5.0 that stayed in production until 2001.</p><div class="hp">122–225 hp net · 4.000 × 3.000</div></article>
+      <article class="era" role="listitem"><div class="year">1969</div><div class="ci">351W</div><p>Taller 9.503 in deck, 3.50 in stroke, bigger mains, rods, and head bolts.</p><div class="hp">153–290 hp · 4.000 × 3.500</div></article>
+      <article class="era minor" role="listitem"><div class="year">1980</div><div class="ci">255 ci</div><p>Low-compression 4.2 L economy variant sold through 1982. Often skipped in swap guides; included for completeness.</p><div class="hp">119 hp · 3.680 × 3.000</div></article>
+      <article class="era" role="listitem"><div class="year">1985</div><div class="ci">302 roller</div><p>Hydraulic roller cam and lifters arrive. The 5.0 HO era begins in earnest.</p><div class="hp">210–225 hp net</div></article>
+      <article class="era" role="listitem"><div class="year">1996</div><div class="ci">Production ends</div><p>The 351W bows out in 1996; the 302 in 2001. The aftermarket never stopped.</p><div class="hp">Ford Racing &amp; Dart blocks today</div></article>
+    </div>
+  </section>
+
+  <section class="wrap sec" id="specs">
+    <div class="sec-head">
+      <div>
+        <div class="kicker">02 / Specifications</div>
+        <h2>The numbers, side by side</h2>
+        <p class="sec-sub">Nominal stock dimensions. Pick an engine above to highlight its column; the SAE / Metric switch rewrites every convertible value on the page.</p>
+      </div>
+      <div class="aside">Deck · journals · rod length<br>bore spacing 4.380 in</div>
+    </div>
+    <div class="table-wrap">
+      <table class="spec-table">
+        <caption>Ford Windsor small block specifications by displacement</caption>
+        <thead>
+          <tr>
+            <th scope="col">Specification</th>
+            <th scope="col" data-col="221">221</th>
+            <th scope="col" data-col="260">260</th>
+            <th scope="col" data-col="289">289</th>
+            <th scope="col" data-col="302">302 <span class="tag">5.0</span></th>
+            <th scope="col" data-col="351">351W</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><th scope="row">Years</th><td data-col="221">1962–63</td><td data-col="260">1962–64</td><td data-col="289">1963–68</td><td data-col="302">1968–2001</td><td data-col="351">1969–96</td></tr>
+          <tr><th scope="row">Bore</th><td data-col="221" data-sae="3.500 in" data-metric="88.9 mm">3.500 in</td><td data-col="260" data-sae="3.800 in" data-metric="96.5 mm">3.800 in</td><td data-col="289" data-sae="4.000 in" data-metric="101.6 mm">4.000 in</td><td data-col="302" data-sae="4.000 in" data-metric="101.6 mm">4.000 in</td><td data-col="351" data-sae="4.000 in" data-metric="101.6 mm">4.000 in</td></tr>
+          <tr><th scope="row">Stroke</th><td data-col="221" data-sae="2.870 in" data-metric="72.9 mm">2.870 in</td><td data-col="260" data-sae="2.870 in" data-metric="72.9 mm">2.870 in</td><td data-col="289" data-sae="2.870 in" data-metric="72.9 mm">2.870 in</td><td data-col="302" data-sae="3.000 in" data-metric="76.2 mm">3.000 in</td><td data-col="351" data-sae="3.500 in" data-metric="88.9 mm">3.500 in</td></tr>
+          <tr><th scope="row">Displacement</th><td data-col="221" data-sae="221 ci" data-metric="3.6 L">221 ci</td><td data-col="260" data-sae="260 ci" data-metric="4.3 L">260 ci</td><td data-col="289" data-sae="289 ci" data-metric="4.7 L">289 ci</td><td data-col="302" data-sae="302 ci" data-metric="4.9 L">302 ci</td><td data-col="351" data-sae="351 ci" data-metric="5.8 L">351 ci</td></tr>
+          <tr><th scope="row">Rod length</th><td data-col="221" data-sae="5.155 in" data-metric="130.9 mm">5.155 in</td><td data-col="260" data-sae="5.155 in" data-metric="130.9 mm">5.155 in</td><td data-col="289" data-sae="5.155 in" data-metric="130.9 mm">5.155 in</td><td data-col="302" data-sae="5.090 in" data-metric="129.3 mm">5.090 in</td><td data-col="351" data-sae="5.956 in" data-metric="151.3 mm">5.956 in</td></tr>
+          <tr><th scope="row">Deck height</th><td data-col="221" data-sae="8.206 in" data-metric="208.4 mm">8.206 in</td><td data-col="260" data-sae="8.206 in" data-metric="208.4 mm">8.206 in</td><td data-col="289" data-sae="8.206 in" data-metric="208.4 mm">8.206 in</td><td data-col="302" data-sae="8.206 in" data-metric="208.4 mm">8.206 in</td><td data-col="351" data-sae="9.480 / 9.503 in" data-metric="240.8 / 241.4 mm">9.480 / 9.503 in</td></tr>
+          <tr><th scope="row">Main journal</th><td data-col="221" data-sae="2.249 in" data-metric="57.1 mm">2.249 in</td><td data-col="260" data-sae="2.249 in" data-metric="57.1 mm">2.249 in</td><td data-col="289" data-sae="2.249 in" data-metric="57.1 mm">2.249 in</td><td data-col="302" data-sae="2.249 in" data-metric="57.1 mm">2.249 in</td><td data-col="351" data-sae="3.000 in" data-metric="76.2 mm">3.000 in</td></tr>
+          <tr><th scope="row">Rod journal</th><td data-col="221" data-sae="2.123 in" data-metric="53.9 mm">2.123 in</td><td data-col="260" data-sae="2.123 in" data-metric="53.9 mm">2.123 in</td><td data-col="289" data-sae="2.123 in" data-metric="53.9 mm">2.123 in</td><td data-col="302" data-sae="2.123 in" data-metric="53.9 mm">2.123 in</td><td data-col="351" data-sae="2.311 in" data-metric="58.7 mm">2.311 in</td></tr>
+          <tr><th scope="row">Bore spacing</th><td data-col="221" data-sae="4.380 in" data-metric="111.3 mm">4.380 in</td><td data-col="260" data-sae="4.380 in" data-metric="111.3 mm">4.380 in</td><td data-col="289" data-sae="4.380 in" data-metric="111.3 mm">4.380 in</td><td data-col="302" data-sae="4.380 in" data-metric="111.3 mm">4.380 in</td><td data-col="351" data-sae="4.380 in" data-metric="111.3 mm">4.380 in</td></tr>
+          <tr><th scope="row">Compression</th><td data-col="221">8.7:1</td><td data-col="260">8.7–8.8:1</td><td data-col="289">8.7–10.5:1</td><td data-col="302">8.0–9.5:1</td><td data-col="351">9.5:1 early, lower later</td></tr>
+          <tr><th scope="row">Valvetrain</th><td data-col="221">Flat tappet</td><td data-col="260">Flat tappet</td><td data-col="289">Flat tappet · solid HiPo</td><td data-col="302">Flat tappet → roller ’85</td><td data-col="351">Flat tappet → roller ’94</td></tr>
+          <tr><th scope="row">Induction</th><td data-col="221">2-barrel</td><td data-col="260">2-barrel</td><td data-col="289">2V / 4V</td><td data-col="302">2V / 4V / EFI</td><td data-col="351">2V / 4V / EFI</td></tr>
+          <tr><th scope="row">Factory output</th><td data-col="221" data-sae="115–145 hp" data-metric="86–108 kW">115–145 hp</td><td data-col="260" data-sae="164 hp" data-metric="122 kW">164 hp</td><td data-col="289" data-sae="195–271 hp" data-metric="145–202 kW">195–271 hp</td><td data-col="302" data-sae="122–225 hp" data-metric="91–168 kW">122–225 hp</td><td data-col="351" data-sae="153–290 hp" data-metric="114–216 kW">153–290 hp</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="table-note"><b>Notes.</b> The 351W deck was 9.480 in for 1969–70 and 9.503 in from 1971. The 302 is 4,942 cc — Ford sold it as a 5.0. Output ranges mix SAE gross and net ratings across different years; the power section explains why they are not comparable. Journal figures are nominal; production tolerances are in the thousandths.</p>
+  </section>
+
+  <section class="wrap sec" id="power">
+    <div class="sec-head">
+      <div>
+        <div class="kicker">03 / Brake horsepower</div>
+        <h2>Why the old numbers look bigger</h2>
+        <p class="sec-sub">Until 1971, Ford advertised SAE gross horsepower: an engine on a stand with no accessories, no exhaust system, and no air cleaner. From 1972, ratings were SAE net — measured as installed. The two are not comparable.</p>
+      </div>
+      <div class="aside">Gross ≠ net<br>never mix the two</div>
+    </div>
+    <div class="two-col">
+      <div class="panel panel-pad explain">
+        <p><strong>Gross (SAE J245 / J607).</strong> No water pump, alternator, power steering, air cleaner, or production exhaust. Optimal timing and jetting. Great for bench racing, useless for predicting what the engine makes in the car.</p>
+        <p><strong>Net (SAE J1349).</strong> Full production accessories, air cleaner, exhaust manifolds, and production timing. This is the number that moved the car.</p>
+        <p>A 1969 351W rated at 290 gross made roughly 210–220 net in the same state of tune. A 1987 5.0 HO rated at 225 net was genuinely stronger than a 1970 302 rated at 220 gross.</p>
+        <div class="stat-row">
+          <div class="stat"><div class="k">Gross era</div><div class="v cyan">1962–1971</div></div>
+          <div class="stat"><div class="k">Net era</div><div class="v amber">1972–2001</div></div>
+        </div>
+      </div>
+      <div class="panel panel-pad">
+        <div class="bars-head">
+          <h3>Representative factory ratings</h3>
+          <div class="rating-tabs" role="group" aria-label="Rating type">
+            <button type="button" class="rt on" data-rating="all">All</button>
+            <button type="button" class="rt" data-rating="gross">Gross</button>
+            <button type="button" class="rt" data-rating="net">Net</button>
+          </div>
+        </div>
+        <div id="barList">
+          <div class="bar-row" data-rating="gross"><div class="bar-label">289 2V<small>1965 · gross</small></div><div class="bar-tracks"><div class="bar-track"><div class="bar-fill" style="--w:62.5%"></div></div><div class="bar-track"><div class="bar-fill tq" style="--w:67.1%"></div></div></div><div class="bar-vals"><b>200 hp</b><br><i>282 lb-ft</i></div></div>
+          <div class="bar-row" data-rating="gross"><div class="bar-label">289 4V<small>1965 · gross</small></div><div class="bar-tracks"><div class="bar-track"><div class="bar-fill" style="--w:70.3%"></div></div><div class="bar-track"><div class="bar-fill tq" style="--w:72.6%"></div></div></div><div class="bar-vals"><b>225 hp</b><br><i>305 lb-ft</i></div></div>
+          <div class="bar-row" data-rating="gross"><div class="bar-label">289 HiPo<small>1964–67 · gross</small></div><div class="bar-tracks"><div class="bar-track"><div class="bar-fill" style="--w:84.7%"></div></div><div class="bar-track"><div class="bar-fill tq" style="--w:74.3%"></div></div></div><div class="bar-vals"><b>271 hp</b><br><i>312 lb-ft</i></div></div>
+          <div class="bar-row" data-rating="gross"><div class="bar-label">302 2V<small>1968 · gross</small></div><div class="bar-tracks"><div class="bar-track"><div class="bar-fill" style="--w:68.8%"></div></div><div class="bar-track"><div class="bar-fill tq" style="--w:71.4%"></div></div></div><div class="bar-vals"><b>220 hp</b><br><i>300 lb-ft</i></div></div>
+          <div class="bar-row" data-rating="gross"><div class="bar-label">351W 2V<small>1969 · gross</small></div><div class="bar-tracks"><div class="bar-track"><div class="bar-fill" style="--w:78.1%"></div></div><div class="bar-track"><div class="bar-fill tq" style="--w:84.5%"></div></div></div><div class="bar-vals"><b>250 hp</b><br><i>355 lb-ft</i></div></div>
+          <div class="bar-row" data-rating="gross"><div class="bar-label">351W 4V<small>1969 · gross</small></div><div class="bar-tracks"><div class="bar-track"><div class="bar-fill" style="--w:90.6%"></div></div><div class="bar-track"><div class="bar-fill tq" style="--w:91.7%"></div></div></div><div class="bar-vals"><b>290 hp</b><br><i>385 lb-ft</i></div></div>
+          <div class="bar-row" data-rating="net"><div class="bar-label">302 2V<small>1975 · net</small></div><div class="bar-tracks"><div class="bar-track"><div class="bar-fill" style="--w:38.1%"></div></div><div class="bar-track"><div class="bar-fill tq" style="--w:56%"></div></div></div><div class="bar-vals"><b>122 hp</b><br><i>235 lb-ft</i></div></div>
+          <div class="bar-row" data-rating="net"><div class="bar-label">302 HO<small>1987 · net</small></div><div class="bar-tracks"><div class="bar-track"><div class="bar-fill" style="--w:70.3%"></div></div><div class="bar-track"><div class="bar-fill tq" style="--w:71.4%"></div></div></div><div class="bar-vals"><b>225 hp</b><br><i>300 lb-ft</i></div></div>
+          <div class="bar-row" data-rating="net"><div class="bar-label">302 Cobra<small>1993 · net</small></div><div class="bar-tracks"><div class="bar-track"><div class="bar-fill" style="--w:73.4%"></div></div><div class="bar-track"><div class="bar-fill tq" style="--w:66.7%"></div></div></div><div class="bar-vals"><b>235 hp</b><br><i>280 lb-ft</i></div></div>
+        </div>
+        <div class="legend"><span><i style="background:linear-gradient(90deg,#3b82f6,#22d3ee)"></i>Horsepower</span><span><i style="background:linear-gradient(90deg,#b45309,#f5a524)"></i>Torque</span><span>scales: 320 hp · 420 lb-ft</span></div>
+        <p class="caveat">Representative factory figures, not a dyno guarantee. Ratings changed with compression, cam, heads, induction, and emissions hardware — sometimes within the same model year.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="wrap sec" id="blueprint">
+    <div class="sec-head">
+      <div>
+        <div class="kicker">04 / Blueprint</div>
+        <h2>Where the inches live</h2>
+        <p class="sec-sub">The 4.380 in bore spacing never changed. Deck height, stroke, and journal size did. Tap a numbered callout on the drawing to read what it controls.</p>
+      </div>
+      <div class="aside">Front elevation · 302<br>not to scale</div>
+    </div>
+    <div class="bp-grid">
+      <div class="panel drawing">
+        <span class="corner c1"></span><span class="corner c2"></span><span class="corner c3"></span><span class="corner c4"></span>
+        <svg class="bp-svg" viewBox="0 0 560 470" role="img" aria-labelledby="bpTitle bpDesc">
+          <title id="bpTitle">Front elevation blueprint of a Ford 302 small block V8</title>
+          <desc id="bpDesc">Schematic front view showing the block, cylinder banks, valve covers, intake, timing cover, damper, oil pan, and dimension callouts. Numbered hotspots reveal details.</desc>
+          <text x="24" y="26" fill="#5d7089" font-family="'JetBrains Mono',monospace" font-size="8" letter-spacing="2">FRONT ELEVATION / 302</text>
+          <line x1="280" y1="18" x2="280" y2="452" stroke="#22324a" stroke-width=".8" stroke-dasharray="6 6"/>
+          <g stroke="#3d5169" stroke-width="1.4" fill="none" stroke-linejoin="round">
+            <path d="M150 336 H410 L388 392 Q280 412 172 392 Z" fill="rgba(59,130,246,.05)"/>
+            <rect x="150" y="150" width="260" height="186" rx="7" fill="rgba(59,130,246,.035)"/>
+            <path d="M158 160 L118 92 L210 58 L236 138 Z" fill="rgba(34,211,238,.03)"/>
+            <path d="M402 160 L442 92 L350 58 L324 138 Z" fill="rgba(34,211,238,.03)"/>
+            <path d="M236 138 L324 138 L306 92 L254 92 Z" fill="rgba(59,130,246,.07)"/>
+            <path d="M124 96 L206 62 L216 82 L136 118 Z" fill="rgba(34,211,238,.055)"/>
+            <path d="M436 96 L354 62 L344 82 L424 118 Z" fill="rgba(34,211,238,.055)"/>
+            <rect x="240" y="172" width="80" height="120" rx="8" fill="rgba(59,130,246,.05)"/>
+            <circle cx="280" cy="302" r="36" fill="rgba(59,130,246,.07)"/>
+            <circle cx="280" cy="302" r="10"/>
+            <circle cx="280" cy="302" r="24" stroke-dasharray="2 4"/>
+            <circle cx="280" cy="188" r="22" fill="rgba(34,211,238,.04)"/>
+            <circle cx="280" cy="188" r="9"/>
+            <circle cx="188" cy="120" r="30" stroke-dasharray="4 4" opacity=".5"/>
+            <circle cx="372" cy="120" r="30" stroke-dasharray="4 4" opacity=".5"/>
+            <circle cx="280" cy="262" r="38" stroke-dasharray="5 5" opacity=".42"/>
+            <rect x="262" y="78" width="36" height="14" rx="3"/>
+          </g>
+          <g fill="#5d7089" font-family="'JetBrains Mono',monospace" font-size="7.5" letter-spacing="1">
+            <text x="136" y="70">LH BANK</text>
+            <text x="392" y="70">RH BANK</text>
+            <text x="163" y="145">DECK</text>
+            <text x="286" y="214">TIMING</text>
+            <text x="286" y="224">COVER</text>
+            <text x="286" y="346">DAMPER</text>
+            <text x="286" y="372">OIL PAN</text>
+            <text x="256" y="60">INTAKE</text>
+          </g>
+          <g stroke="#22d3ee" stroke-width=".8" opacity=".6" fill="none">
+            <path d="M118 428 H442"/>
+            <path d="M118 102 V428"/><path d="M442 102 V428"/>
+            <path d="M118 422 v12"/><path d="M442 422 v12"/>
+            <path d="M500 58 V392"/>
+            <path d="M494 58 h12"/><path d="M494 392 h12"/>
+          </g>
+          <text x="280" y="448" text-anchor="middle" fill="#22d3ee" font-family="'JetBrains Mono',monospace" font-size="8" letter-spacing="1">18.75 in / 476 mm</text>
+          <text x="520" y="228" text-anchor="middle" fill="#22d3ee" font-family="'JetBrains Mono',monospace" font-size="8" letter-spacing="1" transform="rotate(-90 520 228)">20.75 in / 527 mm</text>
+          <g class="hotspot" data-detail="intake" tabindex="0" role="button" aria-label="Intake manifold detail" transform="translate(280,112)"><circle r="10"/><text x="0" y="3.4" text-anchor="middle">1</text><title>Intake manifold</title></g>
+          <g class="hotspot" data-detail="deck" tabindex="0" role="button" aria-label="Deck height detail" transform="translate(205,150)"><circle r="10"/><text x="0" y="3.4" text-anchor="middle">2</text><title>Deck height</title></g>
+          <g class="hotspot" data-detail="timing" tabindex="0" role="button" aria-label="Timing cover detail" transform="translate(280,240)"><circle r="10"/><text x="0" y="3.4" text-anchor="middle">3</text><title>Timing cover and cam</title></g>
+          <g class="hotspot" data-detail="damper" tabindex="0" role="button" aria-label="Harmonic damper detail" transform="translate(280,302)"><circle r="10"/><text x="0" y="3.4" text-anchor="middle">4</text><title>Harmonic damper</title></g>
+          <g class="hotspot" data-detail="pan" tabindex="0" role="button" aria-label="Oil pan and pickup detail" transform="translate(280,362)"><circle r="10"/><text x="0" y="3.4" text-anchor="middle">5</text><title>Oil pan and pickup</title></g>
+          <g class="hotspot" data-detail="rocker" tabindex="0" role="button" aria-label="Valve cover and rocker detail" transform="translate(170,90)"><circle r="10"/><text x="0" y="3.4" text-anchor="middle">6</text><title>Valve cover and rockers</title></g>
+        </svg>
+        <div class="bp-detail" id="bpDetail" aria-live="polite">
+          <div class="k">Callout 02</div>
+          <h3 id="bpDetailTitle">Deck height</h3>
+          <p id="bpDetailBody">8.206 in on the 221 through 302. The 351W sits 1.297 in taller at 9.503 in from 1971. Deck height sets how much stroke and rod length will fit under the heads.</p>
+          <span class="spec" id="bpDetailSpec">221–302: 8.206 in · 351W: 9.480 / 9.503 in</span>
+        </div>
+      </div>
+      <div class="bp-side">
+        <div class="panel mini">
+          <div class="mini-head"><span>Deck height</span><b>inches</b></div>
+          <div class="cmp-row"><span>302</span><div class="cmp-track"><i style="width:82.1%"></i></div><b>8.206</b></div>
+          <div class="cmp-row"><span>351W</span><div class="cmp-track"><i class="amber" style="width:95%"></i></div><b>9.503</b></div>
+          <p class="mini-note">+1.297 in taller deck · +32.9 mm. Early 351W (1969–70) used 9.480 in.</p>
+        </div>
+        <div class="panel mini">
+          <div class="mini-head"><span>Journals</span><b>diameter</b></div>
+          <div class="journal-grid">
+            <div class="journal"><svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="22.5" fill="rgba(34,211,238,.06)" stroke="#22d3ee" stroke-width="1.2"/><text x="32" y="35" text-anchor="middle" fill="#e9eff8" font-family="'JetBrains Mono',monospace" font-size="8">2.249</text></svg><div class="t">302 main<b>2.249 in</b></div></div>
+            <div class="journal"><svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="30" fill="rgba(245,165,36,.06)" stroke="#f5a524" stroke-width="1.2"/><text x="32" y="35" text-anchor="middle" fill="#e9eff8" font-family="'JetBrains Mono',monospace" font-size="8">3.000</text></svg><div class="t">351W main<b>3.000 in</b></div></div>
+            <div class="journal"><svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="21.2" fill="rgba(34,211,238,.06)" stroke="#22d3ee" stroke-width="1.2"/><text x="32" y="35" text-anchor="middle" fill="#e9eff8" font-family="'JetBrains Mono',monospace" font-size="8">2.123</text></svg><div class="t">302 rod<b>2.123 in</b></div></div>
+            <div class="journal"><svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="23.1" fill="rgba(245,165,36,.06)" stroke="#f5a524" stroke-width="1.2"/><text x="32" y="35" text-anchor="middle" fill="#e9eff8" font-family="'JetBrains Mono',monospace" font-size="8">2.311</text></svg><div class="t">351W rod<b>2.311 in</b></div></div>
+          </div>
+          <p class="mini-note">Circles scaled to diameter. 351W mains are 0.751 in larger; rods 0.188 in.</p>
+        </div>
+        <div class="panel mini">
+          <div class="mini-head"><span>Rod length</span><b>center to center</b></div>
+          <div class="cmp-row"><span>302</span><div class="cmp-track"><i style="width:84.8%"></i></div><b>5.090</b></div>
+          <div class="cmp-row"><span>351W</span><div class="cmp-track"><i class="amber" style="width:99.3%"></i></div><b>5.956</b></div>
+          <p class="mini-note">289 uses 5.155 in rods. Rod length changes the rod/stroke ratio and where the piston sits at TDC.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="wrap sec" id="torque">
+    <div class="sec-head">
+      <div>
+        <div class="kicker">05 / Torque</div>
+        <h2>Fastener torque, without the guesswork</h2>
+        <p class="sec-sub">Stock-type fasteners, lightly oiled threads and bolt heads. Aftermarket ARP or torque-to-yield hardware uses its own procedure — never substitute these numbers.</p>
+      </div>
+      <div class="aside">ft-lb first · Nm alongside<br>click any value to copy</div>
+    </div>
+    <div class="warn-box">
+      <div class="ico" aria-hidden="true">!</div>
+      <p><b>Read this first.</b> These are stock-fastener values from period service data. ARP, studs, and torque-to-yield bolts have different preload targets. If your hardware did not come with a spec card, stop and get one. Clean, chase, and lubricate threads before you start.</p>
+    </div>
+    <div class="toolbar">
+      <div class="filter" role="group" aria-label="Filter torque specs">
+        <button type="button" class="fbtn on" data-cat="all">All</button>
+        <button type="button" class="fbtn" data-cat="bottom">Bottom end</button>
+        <button type="button" class="fbtn" data-cat="top">Top end</button>
+        <button type="button" class="fbtn" data-cat="accessory">Accessories</button>
+        <button type="button" class="fbtn" data-cat="351">351W differences</button>
+      </div>
+      <div class="search">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        <input type="search" id="tqSearch" placeholder="Search fasteners…" aria-label="Search torque specs">
+      </div>
+      <button type="button" class="icon-btn" id="copyAll">Copy visible</button>
+    </div>
+    <div class="table-wrap">
+      <table class="torque-table" id="torqueTable">
+        <caption>Stock fastener torque specifications in foot-pounds and newton-metres</caption>
+        <thead>
+          <tr><th scope="col">Fastener</th><th scope="col">221–302</th><th scope="col">351W</th><th scope="col">Nm (221–302 / 351W)</th><th scope="col">Notes</th></tr>
+        </thead>
+        <tbody>
+          <tr data-cat="bottom" data-diff="1"><th scope="row">Main cap bolts</th><td><button class="tq-btn" data-copy="Main cap bolts: 60-70 ft-lb">60–70</button></td><td><button class="tq-btn wide" data-copy="351W main cap bolts: 95-105 ft-lb">95–105</button></td><td>81–95 / 129–142</td><td>Three passes, center outward (3-2-4-1-5). 4-bolt outer bolts: 35–40.</td></tr>
+          <tr data-cat="bottom" data-diff="1"><th scope="row">Connecting rod bolts</th><td><button class="tq-btn" data-copy="Connecting rod bolts: 22-25 ft-lb">22–25</button></td><td><button class="tq-btn wide" data-copy="351W connecting rod bolts: 40-45 ft-lb">40–45</button></td><td>30–34 / 54–61</td><td>Factory manuals also list 19–24. 289 HiPo / Boss 302: 40–45.</td></tr>
+          <tr data-cat="top" data-diff="1"><th scope="row">Cylinder head bolts</th><td><button class="tq-btn" data-copy="Cylinder head bolts: 65-72 ft-lb">65–72</button></td><td><button class="tq-btn wide" data-copy="351W cylinder head bolts: 90-100 ft-lb">90–100</button></td><td>88–98 / 122–136</td><td>Two steps: 55–65, then final. 351W: Summit lists 90–100, some factory sheets 105–112 — confirm by year. TTY: see note below.</td></tr>
+          <tr data-cat="top"><th scope="row">Rocker arm nuts</th><td><button class="tq-btn" data-copy="Rocker arm nuts: 17-23 ft-lb">17–23</button></td><td><button class="tq-btn" data-copy="351W rocker arm nuts: 17-23 ft-lb">17–23</button></td><td>23–31</td><td>Set preload or lash before the final tighten.</td></tr>
+          <tr data-cat="top"><th scope="row">Intake manifold</th><td><button class="tq-btn" data-copy="Intake manifold: 23-25 ft-lb">23–25</button></td><td><button class="tq-btn" data-copy="351W intake manifold: 23-25 ft-lb">23–25</button></td><td>31–34</td><td>Cross-pattern, center out. Recheck after heat cycles.</td></tr>
+          <tr data-cat="top"><th scope="row">Exhaust manifolds</th><td><button class="tq-btn" data-copy="Exhaust manifolds: 18-24 ft-lb">18–24</button></td><td><button class="tq-btn" data-copy="351W exhaust manifolds: 18-24 ft-lb">18–24</button></td><td>24–33</td><td>Warm the engine, then recheck. Use anti-seize on studs.</td></tr>
+          <tr data-cat="top"><th scope="row">Valve covers</th><td><button class="tq-btn" data-copy="Valve covers: 3-5 ft-lb">3–5</button></td><td><button class="tq-btn" data-copy="351W valve covers: 3-5 ft-lb">3–5</button></td><td>4–7</td><td>Stamped covers distort easily. Tighten evenly, don’t crush the gasket.</td></tr>
+          <tr data-cat="top"><th scope="row">Spark plugs</th><td><button class="tq-btn" data-copy="Spark plugs: 10-15 ft-lb">10–15</button></td><td><button class="tq-btn" data-copy="351W spark plugs: 10-15 ft-lb">10–15</button></td><td>14–20</td><td>Aluminum heads: use the head maker’s lower figure.</td></tr>
+          <tr data-cat="bottom"><th scope="row">Oil pump bolt</th><td><button class="tq-btn" data-copy="Oil pump bolt: 23-28 ft-lb">23–28</button></td><td><button class="tq-btn" data-copy="351W oil pump bolt: 23-28 ft-lb">23–28</button></td><td>31–38</td><td>Check pickup-to-pan clearance before final torque.</td></tr>
+          <tr data-cat="bottom"><th scope="row">Oil pan</th><td><button class="tq-btn" data-copy="Oil pan: 7-11 ft-lb">7–11</button></td><td><button class="tq-btn" data-copy="351W oil pan: 7-11 ft-lb">7–11</button></td><td>9–15</td><td>1/4-in bolts: 7–9. 5/16-in bolts: 9–11. Snug, don’t crush the gasket.</td></tr>
+          <tr data-cat="bottom"><th scope="row">Harmonic damper</th><td><button class="tq-btn" data-copy="Harmonic damper: 70-90 ft-lb">70–90</button></td><td><button class="tq-btn" data-copy="351W harmonic damper: 70-90 ft-lb">70–90</button></td><td>95–122</td><td>Hold the flywheel or use a crank holder — never the balancer.</td></tr>
+          <tr data-cat="bottom"><th scope="row">Flywheel / flexplate</th><td><button class="tq-btn" data-copy="Flywheel/flexplate: 75-85 ft-lb">75–85</button></td><td><button class="tq-btn" data-copy="351W flywheel/flexplate: 75-85 ft-lb">75–85</button></td><td>102–115</td><td>New bolts, threadlocker, cross-pattern.</td></tr>
+          <tr data-cat="accessory"><th scope="row">Cam sprocket bolt</th><td><button class="tq-btn" data-copy="Cam sprocket bolt: 40-45 ft-lb">40–45</button></td><td><button class="tq-btn" data-copy="351W cam sprocket bolt: 40-45 ft-lb">40–45</button></td><td>54–61</td><td>Use a new bolt where the manufacturer specifies.</td></tr>
+          <tr data-cat="accessory"><th scope="row">Cam thrust plate</th><td><button class="tq-btn" data-copy="Cam thrust plate: 8-10 ft-lb">8–10</button></td><td><button class="tq-btn" data-copy="351W cam thrust plate: 8-10 ft-lb">8–10</button></td><td>11–14</td><td>Small fasteners. Inch-pound torque wrench preferred.</td></tr>
+          <tr data-cat="accessory"><th scope="row">Front cover</th><td><button class="tq-btn" data-copy="Front cover: 12-15 ft-lb">12–15</button></td><td><button class="tq-btn" data-copy="351W front cover: 12-15 ft-lb">12–15</button></td><td>16–20</td><td>Sealant at the pan and block corners.</td></tr>
+          <tr data-cat="accessory"><th scope="row">Water pump</th><td><button class="tq-btn" data-copy="Water pump: 12-18 ft-lb">12–18</button></td><td><button class="tq-btn" data-copy="351W water pump: 12-18 ft-lb">12–18</button></td><td>16–24</td><td>Clean both gasket surfaces; don’t overtighten the timing cover.</td></tr>
+          <tr data-cat="accessory"><th scope="row">Thermostat housing</th><td><button class="tq-btn" data-copy="Thermostat housing: 12-15 ft-lb">12–15</button></td><td><button class="tq-btn" data-copy="351W thermostat housing: 12-15 ft-lb">12–15</button></td><td>16–20</td><td>Use a new gasket or O-ring.</td></tr>
+          <tr data-cat="accessory"><th scope="row">Pressure plate</th><td><button class="tq-btn" data-copy="Pressure plate: 35 ft-lb">35</button></td><td><button class="tq-btn" data-copy="351W pressure plate: 35 ft-lb">35</button></td><td>47</td><td>Sources also list 25; use the clutch maker’s figure.</td></tr>
+          <tr data-cat="accessory"><th scope="row">Bellhousing</th><td><button class="tq-btn" data-copy="Bellhousing: 28-38 ft-lb">28–38</button></td><td><button class="tq-btn" data-copy="351W bellhousing: 28-38 ft-lb">28–38</button></td><td>38–52</td><td>Cross-pattern. Check runout before the transmission goes in.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="table-note"><b>1988–95 5.0L head bolts.</b> Two styles exist and must not be mixed on one head. Standard hex: 55–65 ft-lb, then 65–72 ft-lb. Flanged torque-to-yield: 25–35, then 45–55 ft-lb, then an additional 85–95° (about ¼ turn). TTY bolts are single-use — replace them. Some sources put the changeover at 1992; identify the bolt style before you torque.</p>
+  </section>
+
+  <section class="wrap sec" id="assembly">
+    <div class="sec-head">
+      <div>
+        <div class="kicker">06 / Assembly</div>
+        <h2>Building a 302, in order</h2>
+        <p class="sec-sub">A stock-ish 302 rebuild, written for someone doing it for the first time. Work top to bottom, tick each stage as you finish, and don't skip the measuring. Check every number against the manual for your block and hardware.</p>
+      </div>
+      <div class="aside">10 stages · stock 302<br>progress saves in this browser</div>
+    </div>
+
+    <div class="panel progress-card">
+      <span class="lbl">Build progress</span>
+      <div class="progress-track" role="progressbar" aria-label="Assembly stages complete" aria-valuemin="0" aria-valuemax="10" aria-valuenow="0" id="progressBar">
+        <div class="progress-fill" id="progressFill"></div>
+      </div>
+      <span class="progress-count" id="progressCount" aria-live="polite">0 / 10</span>
+      <button type="button" class="reset" id="resetProgress">Reset</button>
+    </div>
+
+    <details class="stage" data-stage="1" open>
+      <summary>
+        <span class="num">01</span>
+        <span><span class="title">Teardown and inspection</span><span class="meta">Bag it · label it · measure it</span></span>
+        <input type="checkbox" class="check" data-check="1" aria-label="Mark teardown and inspection complete">
+        <svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+      </summary>
+      <div class="stage-body">
+        <ol>
+          <li>Drain the coolant and oil, then pull the intake, heads, and accessories. Keep the pushrods in order — they wear into their lifters.</li>
+          <li>Number every main cap, rod cap, and rod before removing it. Caps are matched and directional; swapping them ruins the bore.</li>
+          <li>Strip the block bare and hot-tank or pressure-wash it. Remove all core plugs, the cam bearings, and the oil gallery plugs so the machine shop can clean the passages.</li>
+          <li>Magnuflux or crack-test the block, crank, and rods. Check the main saddles for line-bore truth before spending money on machine work.</li>
+        </ol>
+        <div class="specs"><span class="spec">Bore spacing 4.380 in</span><span class="spec">Deck 8.206 in</span><span class="spec">Main journal 2.249 in</span><span class="spec">Rod journal 2.123 in</span></div>
+        <p class="why"><b>Why it matters.</b> A cracked block or a bent rod is cheaper to find now than after you have bought pistons and machine work.</p>
+      </div>
+    </details>
+
+    <details class="stage" data-stage="2">
+      <summary>
+        <span class="num">02</span>
+        <span><span class="title">Machine work</span><span class="meta">Bore · hone · deck · balance</span></span>
+        <input type="checkbox" class="check" data-check="2" aria-label="Mark machine work complete">
+        <svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+      </summary>
+      <div class="stage-body">
+        <ol>
+          <li>Have the block bored and honed to the piston maker's clearance — not to a generic number. Torque plates should be on the block during honing.</li>
+          <li>Deck the block to a true surface and confirm the deck height you actually have. Removing material changes compression and piston-to-valve clearance.</li>
+          <li>Line-hone or line-bore the mains only if the saddles are out of true or you are using aftermarket caps.</li>
+          <li>Balance the crank, rods, pistons, damper, and flywheel as a set. Install new cam bearings and core plugs after the block comes back clean.</li>
+        </ol>
+        <div class="specs"><span class="spec">Piston-to-wall 0.0018–0.0026 in cast</span><span class="spec">Verify ring gaps with the ring maker's card</span><span class="spec">Deck height measured, not assumed</span></div>
+        <p class="why"><b>Why it matters.</b> Machine work sets every clearance downstream. If the bore or deck is wrong, no torque value or gasket will save the build.</p>
+      </div>
+    </details>
+
+    <details class="stage" data-stage="3">
+      <summary>
+        <span class="num">03</span>
+        <span><span class="title">Crankshaft and main bearings</span><span class="meta">Clearance · end play · cap order</span></span>
+        <input type="checkbox" class="check" data-check="3" aria-label="Mark crankshaft and main bearings complete">
+        <svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+      </summary>
+      <div class="stage-body">
+        <ol>
+          <li>Fit the main bearings dry, then measure oil clearance with a micrometer and bore gauge or Plastigauge. Factory target is 0.0004–0.0015 in; up to 0.0021 in is the allowable limit.</li>
+          <li>Lubricate the journals and bearing faces with assembly lube, lay the crank in, and check that it spins freely by hand.</li>
+          <li>Torque the caps in the factory sequence — <b>3-2-4-1-5</b>, center outward — in two or three equal passes to 60–70 ft-lb.</li>
+          <li>Check crankshaft end play with a dial indicator and confirm it against the manual before the rear main seal goes in.</li>
+        </ol>
+        <div class="specs"><span class="spec">Main clearance 0.0004–0.0015 in</span><span class="spec">Allowable 0.0021 in</span><span class="spec">End play 0.004–0.008 in</span><span class="spec">Main bolts 60–70 ft-lb</span></div>
+        <div class="seq-wrap">
+          <div class="seq">
+            <svg viewBox="0 0 300 96" role="img" aria-label="Main cap torque sequence 3, 2, 4, 1, 5 from front to rear">
+              <text x="0" y="12" fill="#5d7089" font-family="'JetBrains Mono',monospace" font-size="7" letter-spacing="1.5">MAIN CAPS — FRONT → REAR</text>
+              <g font-family="'JetBrains Mono',monospace" font-size="11" text-anchor="middle">
+                <rect x="12" y="28" width="46" height="34" rx="4" fill="rgba(34,211,238,.07)" stroke="#2b3b52"/>
+                <rect x="67" y="28" width="46" height="34" rx="4" fill="rgba(34,211,238,.13)" stroke="#22d3ee"/>
+                <rect x="122" y="28" width="46" height="34" rx="4" fill="rgba(245,165,36,.13)" stroke="#f5a524"/>
+                <rect x="177" y="28" width="46" height="34" rx="4" fill="rgba(34,211,238,.13)" stroke="#22d3ee"/>
+                <rect x="232" y="28" width="46" height="34" rx="4" fill="rgba(34,211,238,.07)" stroke="#2b3b52"/>
+                <text x="35" y="50" fill="#e9eff8">1</text>
+                <text x="90" y="50" fill="#e9eff8">2</text>
+                <text x="145" y="50" fill="#e9eff8">3</text>
+                <text x="200" y="50" fill="#e9eff8">4</text>
+                <text x="255" y="50" fill="#e9eff8">5</text>
+                <text x="35" y="76" fill="#5d7089" font-size="7">4th</text>
+                <text x="90" y="76" fill="#22d3ee" font-size="7">2nd</text>
+                <text x="145" y="76" fill="#f5a524" font-size="7">1st</text>
+                <text x="200" y="76" fill="#22d3ee" font-size="7">3rd</text>
+                <text x="255" y="76" fill="#5d7089" font-size="7">5th</text>
+              </g>
+            </svg>
+            <div class="cap">Torque order 3-2-4-1-5. Amber is the first cap, cyan next, dim last. Two or three equal passes.</div>
+          </div>
+          <div class="seq">
+            <svg viewBox="0 0 300 96" role="img" aria-label="Cylinder head bolt torque sequence, top row 9 5 1 3 7, bottom row 10 6 2 4 8">
+              <text x="0" y="12" fill="#5d7089" font-family="'JetBrains Mono',monospace" font-size="7" letter-spacing="1.5">HEAD BOLTS — ONE HEAD</text>
+              <g font-family="'JetBrains Mono',monospace" font-size="9" text-anchor="middle">
+                <g fill="rgba(34,211,238,.1)" stroke="#22d3ee">
+                  <circle cx="30" cy="38" r="11"/><circle cx="80" cy="38" r="11"/><circle cx="130" cy="38" r="11"/><circle cx="180" cy="38" r="11"/><circle cx="230" cy="38" r="11"/>
+                  <circle cx="30" cy="72" r="11"/><circle cx="80" cy="72" r="11"/><circle cx="130" cy="72" r="11"/><circle cx="180" cy="72" r="11"/><circle cx="230" cy="72" r="11"/>
+                </g>
+                <g fill="#e9eff8">
+                  <text x="30" y="41">9</text><text x="80" y="41">5</text><text x="130" y="41">1</text><text x="180" y="41">3</text><text x="230" y="41">7</text>
+                  <text x="30" y="75">10</text><text x="80" y="75">6</text><text x="130" y="75">2</text><text x="180" y="75">4</text><text x="230" y="75">8</text>
+                </g>
+              </g>
+            </svg>
+            <div class="cap">Top row 9-5-1-3-7, bottom row 10-6-2-4-8. Start at the center and spiral out; torque in 2–3 equal steps.</div>
+          </div>
+        </div>
+        <p class="why"><b>Why it matters.</b> Main clearance and end play decide whether the crank lives. The center-out sequence seats the cap evenly instead of cocking it.</p>
+      </div>
+    </details>
+
+    <details class="stage" data-stage="4">
+      <summary>
+        <span class="num">04</span>
+        <span><span class="title">Rods and pistons</span><span class="meta">Ring gaps · orientation · rod bolts</span></span>
+        <input type="checkbox" class="check" data-check="4" aria-label="Mark rods and pistons complete">
+        <svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+      </summary>
+      <div class="stage-body">
+        <ol>
+          <li>Check ring end gaps in the bore they will run in, using the ring maker's spec. File gaps square — never chamfer the ends.</li>
+          <li>Fit the rings with the correct side up and the gaps staggered. Oil the bores and ring lands before assembly.</li>
+          <li>Orient each piston so the notch or dot faces the front of the engine, and make sure the rod's oil squirt hole faces the correct side.</li>
+          <li>Lubricate the rod bearings, pull the pistons in with a tapered ring compressor, and torque rod bolts to 22–25 ft-lb (40–45 for HiPo/Boss rods) in two passes.</li>
+          <li>Check rod bearing oil clearance (0.0008–0.0015 in) and rod side clearance (typically 0.010–0.020 in) — side clearance is measured between the rod and the crank cheek, not at the bearing.</li>
+        </ol>
+        <div class="specs"><span class="spec">Rod bolts 22–25 ft-lb</span><span class="spec">Rod oil clearance 0.0008–0.0015 in</span><span class="spec">Rod side clearance 0.010–0.020 in</span></div>
+        <p class="why"><b>Why it matters.</b> A ring installed upside down or a rod facing the wrong way will not seal and cannot be fixed without pulling the engine again.</p>
+      </div>
+    </details>
+
+    <details class="stage" data-stage="5">
+      <summary>
+        <span class="num">05</span>
+        <span><span class="title">Camshaft and timing</span><span class="meta">Degree it · lube it · line it up</span></span>
+        <input type="checkbox" class="check" data-check="5" aria-label="Mark camshaft and timing complete">
+        <svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+      </summary>
+      <div class="stage-body">
+        <ol>
+          <li>Slide the cam in with plenty of break-in lube on the lobes and distributor gear. Never bang it through a bearing.</li>
+          <li>Fit the thrust plate and torque to 8–10 ft-lb, then check cam end play.</li>
+          <li>Install the timing set dot-to-dot and degree the cam with a wheel if you have one. Dot-to-dot is the baseline, not a guarantee.</li>
+          <li>Torque the cam sprocket bolt to 40–45 ft-lb, then recheck the dots after the bolt is tight.</li>
+        </ol>
+        <div class="specs"><span class="spec">Cam sprocket 40–45 ft-lb</span><span class="spec">Thrust plate 8–10 ft-lb</span><span class="spec">Verify cam end play</span></div>
+        <p class="why"><b>Why it matters.</b> A cam that is one tooth off will idle badly, make no vacuum, and can bend valves. Degree it once and know.</p>
+      </div>
+    </details>
+
+    <details class="stage" data-stage="6">
+      <summary>
+        <span class="num">06</span>
+        <span><span class="title">Oil system</span><span class="meta">Pump · pickup · pan · prime</span></span>
+        <input type="checkbox" class="check" data-check="6" aria-label="Mark oil system complete">
+        <svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+      </summary>
+      <div class="stage-body">
+        <ol>
+          <li>Install the oil pump with a new driveshaft and torque the bolt to 23–28 ft-lb. Check that the shaft engages the distributor gear fully.</li>
+          <li>Bolt the pickup to the pump and verify 1/4–3/8 in of clearance to the pan floor. Tack-weld the pickup if the maker allows it.</li>
+          <li>Fit the pan with a new gasket and sealant at the corners. Torque 1/4-in bolts to 7–9 ft-lb and 5/16-in to 9–11 ft-lb.</li>
+          <li>Prime the system with a drill-driven pump shaft or a pressurized primer until oil reaches the rockers.</li>
+        </ol>
+        <div class="specs"><span class="spec">Oil pump 23–28 ft-lb</span><span class="spec">Pan 7–11 ft-lb</span><span class="spec">5 qt with filter, stock 302</span></div>
+        <p class="why"><b>Why it matters.</b> A pickup resting on the pan floor starves the pump; one sitting too high can uncover on a hard launch. Prime before the first crank.</p>
+      </div>
+    </details>
+
+    <details class="stage" data-stage="7">
+      <summary>
+        <span class="num">07</span>
+        <span><span class="title">Cylinder heads</span><span class="meta">Gaskets · sequence · TTY warning</span></span>
+        <input type="checkbox" class="check" data-check="7" aria-label="Mark cylinder heads complete">
+        <svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+      </summary>
+      <div class="stage-body">
+        <ol>
+          <li>Clean the deck and head surfaces to bare metal. Check head flatness and the gasket's orientation — "front" and "up" marks matter.</li>
+          <li>Chase the head bolt holes and blow them out. Oil or sealant on the threads per the manual; never leave fluid pooled in a blind hole.</li>
+          <li>Torque in the factory sequence — top row 9-5-1-3-7, bottom row 10-6-2-4-8 — in two or three equal steps to 65–72 ft-lb.</li>
+          <li>If the engine has flanged torque-to-yield bolts: 25–35, then 45–55 ft-lb, then 85–95° more. Do not reuse TTY bolts.</li>
+        </ol>
+        <div class="specs"><span class="spec">Head bolts 65–72 ft-lb</span><span class="spec">351W 90–100 ft-lb</span><span class="spec">TTY: single-use</span></div>
+        <p class="why"><b>Why it matters.</b> Head bolts clamp the gasket, and the sequence is what keeps the head from warping as it loads. Mixing bolt styles on one head leaks.</p>
+      </div>
+    </details>
+
+    <details class="stage" data-stage="8">
+      <summary>
+        <span class="num">08</span>
+        <span><span class="title">Valvetrain</span><span class="meta">Preload · lash · pushrods</span></span>
+        <input type="checkbox" class="check" data-check="8" aria-label="Mark valvetrain complete">
+        <svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+      </summary>
+      <div class="stage-body">
+        <ol>
+          <li>Install the lifters with lube on the faces, then drop the pushrods into their original positions.</li>
+          <li>Set hydraulic lifter preload per the lifter maker — typically about 1/2 to 1 turn past zero lash on an adjustable valvetrain.</li>
+          <li>For a solid-lifter 289 HiPo, set lash to the cam card, usually around 0.018–0.020 in hot. Verify before you lock it down.</li>
+          <li>Torque rocker nuts to 17–23 ft-lb, then turn the engine through two full revolutions by hand and watch for coil bind or retainer contact.</li>
+        </ol>
+        <div class="specs"><span class="spec">Rocker nuts 17–23 ft-lb</span><span class="spec">Hydraulic preload ≈ ½–1 turn</span><span class="spec">HiPo lash per cam card</span></div>
+        <p class="why"><b>Why it matters.</b> Wrong preload or lash shows up as noise, lost lift, or a bent pushrod. Two hand revolutions catch interference before the starter does.</p>
+      </div>
+    </details>
+
+    <details class="stage" data-stage="9">
+      <summary>
+        <span class="num">09</span>
+        <span><span class="title">Intake, ignition and accessories</span><span class="meta">Seal · timing · torque</span></span>
+        <input type="checkbox" class="check" data-check="9" aria-label="Mark intake, ignition and accessories complete">
+        <svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+      </summary>
+      <div class="stage-body">
+        <ol>
+          <li>Dry-fit the intake, check port alignment, then seal the ends with RTV and the side gaskets per the maker. Torque to 23–25 ft-lb, center out.</li>
+          <li>Install the distributor with the engine at TDC on cylinder 1 and the rotor pointing to the number-1 tower. Confirm the firing order.</li>
+          <li>Set base timing to the underhood label — commonly 10° BTDC for a carbureted 302, with the spout disconnected on EFI. Confirm plug gap.</li>
+          <li>Torque the damper to 70–90 ft-lb, water pump to 12–18, valve covers to 3–5, and the thermostat housing to 12–15.</li>
+        </ol>
+        <div class="specs"><span class="spec">Intake 23–25 ft-lb</span><span class="spec">Base timing ≈ 10° BTDC</span><span class="spec">Plug gap ≈ 0.034 in carb / 0.052–0.056 EFI</span></div>
+        <p class="why"><b>Why it matters.</b> An intake that leaks at the ends runs lean and whistles; a distributor one tooth off will not time in. Both are easy to get right now.</p>
+      </div>
+    </details>
+
+    <details class="stage" data-stage="10">
+      <summary>
+        <span class="num">10</span>
+        <span><span class="title">First start and break-in</span><span class="meta">Prime · cam · recheck</span></span>
+        <input type="checkbox" class="check" data-check="10" aria-label="Mark first start and break-in complete">
+        <svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+      </summary>
+      <div class="stage-body">
+        <ol>
+          <li>Fill with oil and coolant, prime the oil system, and check for leaks before you crank. Confirm the ignition and fuel are live.</li>
+          <li>Start it and bring it to 1,500–2,000 rpm immediately for flat-tappet cam break-in — about 20–30 minutes, varying the rpm. Do not let it idle.</li>
+          <li>Watch oil pressure, coolant temperature, and for unusual noise. Shut down immediately if pressure is low or something is knocking.</li>
+          <li>Cool down, change the oil and filter, then re-torque the intake and exhaust fasteners and recheck timing. Recheck valve lash after the first few heat cycles.</li>
+        </ol>
+        <div class="specs"><span class="spec">Cam break-in 1,500–2,000 rpm · 20–30 min</span><span class="spec">Oil pressure hot: per manual</span><span class="spec">Change oil after break-in</span></div>
+        <p class="why"><b>Why it matters.</b> A flat-tappet cam relies on splash and rpm to break in. Idling a fresh engine is how lobes get wiped.</p>
+      </div>
+    </details>
+  </section>
+
+  <section class="wrap sec" id="reference">
+    <div class="sec-head">
+      <div>
+        <div class="kicker">07 / Reference</div>
+        <h2>Firing order and quick lookup</h2>
+        <p class="sec-sub">Cylinder numbering is the same across the family: passenger side 1-2-3-4 front to rear, driver side 5-6-7-8. The firing order is not — the 5.0 HO and every 351W use the later order.</p>
+      </div>
+      <div class="aside">Passenger side 1-2-3-4<br>Driver side 5-6-7-8</div>
+    </div>
+    <div class="ref-grid">
+      <div class="panel fo-card">
+        <div class="fo-grid">
+          <div class="fo">
+            <svg viewBox="0 0 240 150" role="img" aria-label="Firing order 1-5-4-2-6-3-7-8 for standard 221, 260, 289 and 302">
+              <text x="0" y="10" fill="#5d7089" font-family="'JetBrains Mono',monospace" font-size="6.5" letter-spacing="1.4">STANDARD 221 / 260 / 289 / 302</text>
+              <g font-family="'JetBrains Mono',monospace" font-size="8" text-anchor="middle">
+                <rect x="8" y="24" width="46" height="96" rx="4" fill="rgba(34,211,238,.05)" stroke="#2b3b52"/>
+                <rect x="58" y="24" width="46" height="96" rx="4" fill="rgba(34,211,238,.05)" stroke="#2b3b52"/>
+                <rect x="108" y="24" width="46" height="96" rx="4" fill="rgba(34,211,238,.05)" stroke="#2b3b52"/>
+                <rect x="158" y="24" width="46" height="96" rx="4" fill="rgba(34,211,238,.05)" stroke="#2b3b52"/>
+                <text x="31" y="38" fill="#5d7089" font-size="6">PASS</text>
+                <text x="81" y="38" fill="#5d7089" font-size="6">PASS</text>
+                <text x="131" y="38" fill="#5d7089" font-size="6">PASS</text>
+                <text x="181" y="38" fill="#5d7089" font-size="6">PASS</text>
+                <text x="31" y="62" fill="#e9eff8">1</text><text x="81" y="62" fill="#e9eff8">2</text><text x="131" y="62" fill="#e9eff8">3</text><text x="181" y="62" fill="#e9eff8">4</text>
+                <text x="31" y="86" fill="#f5a524">5</text><text x="81" y="86" fill="#f5a524">6</text><text x="131" y="86" fill="#f5a524">7</text><text x="181" y="86" fill="#f5a524">8</text>
+                <text x="31" y="108" fill="#5d7089" font-size="6">DRV</text>
+                <text x="81" y="108" fill="#5d7089" font-size="6">DRV</text>
+                <text x="131" y="108" fill="#5d7089" font-size="6">DRV</text>
+                <text x="181" y="108" fill="#5d7089" font-size="6">DRV</text>
+              </g>
+              <text x="120" y="138" text-anchor="middle" fill="#22d3ee" font-family="'JetBrains Mono',monospace" font-size="8" letter-spacing="1">1-5-4-2-6-3-7-8</text>
+            </svg>
+            <h4>Standard Windsor</h4>
+            <div class="order">1-5-4-2-6-3-7-8</div>
+            <div class="note">221, 260, 289, 302 · most carbureted</div>
+          </div>
+          <div class="fo">
+            <svg viewBox="0 0 240 150" role="img" aria-label="Firing order 1-3-7-2-6-5-4-8 for 5.0 HO and 351W">
+              <text x="0" y="10" fill="#5d7089" font-family="'JetBrains Mono',monospace" font-size="6.5" letter-spacing="1.4">5.0 HO / ALL 351W</text>
+              <g font-family="'JetBrains Mono',monospace" font-size="8" text-anchor="middle">
+                <rect x="8" y="24" width="46" height="96" rx="4" fill="rgba(245,165,36,.05)" stroke="#2b3b52"/>
+                <rect x="58" y="24" width="46" height="96" rx="4" fill="rgba(245,165,36,.05)" stroke="#2b3b52"/>
+                <rect x="108" y="24" width="46" height="96" rx="4" fill="rgba(245,165,36,.05)" stroke="#2b3b52"/>
+                <rect x="158" y="24" width="46" height="96" rx="4" fill="rgba(245,165,36,.05)" stroke="#2b3b52"/>
+                <text x="31" y="38" fill="#5d7089" font-size="6">PASS</text>
+                <text x="81" y="38" fill="#5d7089" font-size="6">PASS</text>
+                <text x="131" y="38" fill="#5d7089" font-size="6">PASS</text>
+                <text x="181" y="38" fill="#5d7089" font-size="6">PASS</text>
+                <text x="31" y="62" fill="#e9eff8">1</text><text x="81" y="62" fill="#e9eff8">2</text><text x="131" y="62" fill="#e9eff8">3</text><text x="181" y="62" fill="#e9eff8">4</text>
+                <text x="31" y="86" fill="#f5a524">5</text><text x="81" y="86" fill="#f5a524">6</text><text x="131" y="86" fill="#f5a524">7</text><text x="181" y="86" fill="#f5a524">8</text>
+                <text x="31" y="108" fill="#5d7089" font-size="6">DRV</text>
+                <text x="81" y="108" fill="#5d7089" font-size="6">DRV</text>
+                <text x="131" y="108" fill="#5d7089" font-size="6">DRV</text>
+                <text x="181" y="108" fill="#5d7089" font-size="6">DRV</text>
+              </g>
+              <text x="120" y="138" text-anchor="middle" fill="#f5a524" font-family="'JetBrains Mono',monospace" font-size="8" letter-spacing="1">1-3-7-2-6-5-4-8</text>
+            </svg>
+            <h4>HO / 351W</h4>
+            <div class="order">1-3-7-2-6-5-4-8</div>
+            <div class="note">5.0 HO, 351W · check the cam card</div>
+          </div>
+        </div>
+        <p class="caveat">The 351W uses the later order because of its different crank and cam layout. A 302 with an HO cam also uses 1-3-7-2-6-5-4-8 — the order follows the camshaft, not the block. If you did not build it, read the cam card or verify with the valve events.</p>
+      </div>
+      <div class="panel panel-pad">
+        <div class="bars-head"><h3>Quick lookup</h3><span class="tag">stock 302</span></div>
+        <div class="table-wrap" style="border:0;box-shadow:none;background:transparent">
+          <table class="quick-table">
+            <caption>Quick reference values for a stock 302</caption>
+            <tbody>
+              <tr><th scope="row">Oil capacity</th><td>5 qt with filter</td></tr>
+              <tr><th scope="row">Coolant capacity</th><td>≈ 13–14 qt</td></tr>
+              <tr><th scope="row">Oil pressure hot</th><td>40–60 psi at speed</td></tr>
+              <tr><th scope="row">Base timing</th><td>≈ 10° BTDC</td></tr>
+              <tr><th scope="row">Plug gap</th><td>0.034 in carb · 0.052–0.056 EFI</td></tr>
+              <tr><th scope="row">Firing order</th><td>1-5-4-2-6-3-7-8</td></tr>
+              <tr><th scope="row">Main clearance</th><td>0.0004–0.0015 in</td></tr>
+              <tr><th scope="row">Rod clearance</th><td>0.0008–0.0015 in</td></tr>
+              <tr><th scope="row">Crank end play</th><td>0.004–0.008 in</td></tr>
+              <tr><th scope="row">Piston-to-wall</th><td>0.0018–0.0026 in cast</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="table-note" style="margin-top:8px"><b>Capacities vary</b> with pan, radiator, and cooler. Fill to the dipstick and the radiator, not to the book.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="wrap sec" id="sources">
+    <div class="sec-head">
+      <div>
+        <div class="kicker">08 / Sources</div>
+        <h2>Where this came from</h2>
+        <p class="sec-sub">Factory dimensions, service torque data, and builder references. Where sources disagree, the page says so rather than picking a winner silently.</p>
+      </div>
+      <div class="aside">Cross-checked<br>Nov 2026</div>
+    </div>
+    <div class="panel sources">
+      <a href="https://performanceparts.ford.com/download/instructionsheets/fordinstshtm-6013-b347.pdf" target="_blank" rel="noopener"><b>Ford Performance — crank kit instructions</b>Journal clearance and measuring procedure</a>
+      <a href="https://help.summitracing.com/knowledgebase/article/HE-04923/en-us" target="_blank" rel="noopener"><b>Summit Racing — Windsor torque specs</b>Stock fastener torque chart for 289 / 302 / 351</a>
+      <a href="https://www.enginebuildermag.com/2013/04/revised-cylinder-head-bolt-and-torque-procedures-for-88-95-ford-5-0l-engines/" target="_blank" rel="noopener"><b>Engine Builder — 1988–95 5.0L head bolts</b>Hex vs torque-to-yield procedure</a>
+      <a href="https://www.mahle-aftermarket.com/media/local-media-north-america/pdfs-&amp;-thumbnails/torque3.pdf" target="_blank" rel="noopener"><b>MAHLE — torque specifications</b>Fastener torque reference</a>
+      <a href="https://en.wikipedia.org/wiki/Ford_Windsor_engine" target="_blank" rel="noopener"><b>Wikipedia — Ford Windsor engine</b>Production years, bore and stroke, ratings</a>
+      <a href="https://mainemustang.com/mustang-info/ford-engine-bolt-torque-chart" target="_blank" rel="noopener"><b>Maine Mustang — Ford bolt torque chart</b>Cross-check for rod and main values</a>
+    </div>
+    <div class="disclaimer">
+      <p><b>Use your manual.</b> This page is a study aid, not a service manual. Casting numbers, model year, and aftermarket hardware all change the correct values. Torque figures assume clean, lightly oiled stock fasteners unless noted. Verify every clearance with a micrometer and every torque with a calibrated wrench — and when a source here conflicts with the manual for your engine, the manual wins.</p>
+    </div>
+  </section>
+</main>
+
+<section class="print-card" aria-hidden="true">
+  <header class="pc-head">
+    <div>
+      <div class="pc-kicker">SBF // Tech · Pit Card</div>
+      <h1>Ford 302 — quick reference</h1>
+      <p>Stock fasteners, lightly oiled. Verify against your manual before use.</p>
+    </div>
+    <div class="pc-fo">
+      <span>Firing order</span>
+      <b>1-5-4-2-6-3-7-8</b>
+      <small>5.0 HO / 351W: 1-3-7-2-6-5-4-8</small>
+    </div>
+  </header>
+  <div class="pc-grid">
+    <div class="pc-block">
+      <h2>Torque — ft-lb</h2>
+      <table>
+        <tbody>
+          <tr><th>Main caps</th><td>60–70</td><th>Rod bolts</th><td>22–25</td></tr>
+          <tr><th>Head bolts</th><td>65–72</td><th>Rocker nuts</th><td>17–23</td></tr>
+          <tr><th>Intake</th><td>23–25</td><th>Oil pump</th><td>23–28</td></tr>
+          <tr><th>Oil pan</th><td>7–11</td><th>Cam sprocket</th><td>40–45</td></tr>
+          <tr><th>Damper</th><td>70–90</td><th>Flywheel</th><td>75–85</td></tr>
+          <tr><th>Front cover</th><td>12–15</td><th>Water pump</th><td>12–18</td></tr>
+          <tr><th>Valve covers</th><td>3–5</td><th>Spark plugs</th><td>10–15</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="pc-block">
+      <h2>Clearance — in</h2>
+      <table>
+        <tbody>
+          <tr><th>Main bearing</th><td>0.0004–0.0015</td></tr>
+          <tr><th>Rod bearing</th><td>0.0008–0.0015</td></tr>
+          <tr><th>Piston-to-wall</th><td>0.0018–0.0026 cast</td></tr>
+          <tr><th>Crank end play</th><td>0.004–0.008</td></tr>
+        </tbody>
+      </table>
+      <h2 style="margin-top:14px">Sequences</h2>
+      <p class="pc-seq"><b>Main caps:</b> 3-2-4-1-5, center out, 2–3 passes.<br><b>Head bolts:</b> top 9-5-1-3-7 / bottom 10-6-2-4-8, 2–3 steps.</p>
+      <p class="pc-seq"><b>1988–95 TTY:</b> 25–35, 45–55 ft-lb, then +85–95°. Single use.</p>
+    </div>
+  </div>
+  <footer class="pc-foot">
+    <span>Oil 5 qt with filter · Coolant ≈ 13–14 qt · Base timing ≈ 10° BTDC · Plug gap 0.034 carb / 0.052–0.056 EFI</span>
+    <span>sbf-v8-tech.html</span>
+  </footer>
+</section>
+
+<footer>
+  <div class="wrap foot-inner">
+    <span><b>SBF // Tech</b> — a static reference page. No tracking, no build step.</span>
+    <span>Nominal stock dimensions · verify against your casting and factory manual</span>
+  </div>
+</footer>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+'use strict';
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
+const NS = 'http://www.w3.org/2000/svg';
+
+/* ---------- engine data ---------- */
+const ENGINES = {
+  '221': { years:'1962–63', bore:3.500, stroke:2.870, deck:8.206, rod:5.155, disp:'3.6 L', hp:145, tq:216, rpm:4400, rating:'gross', firing:'1-5-4-2-6-3-7-8', firingNote:'Standard Windsor' },
+  '260': { years:'1962–64', bore:3.800, stroke:2.870, deck:8.206, rod:5.155, disp:'4.3 L', hp:164, tq:258, rpm:4400, rating:'gross', firing:'1-5-4-2-6-3-7-8', firingNote:'Standard Windsor' },
+  '289': { years:'1963–68', bore:4.000, stroke:2.870, deck:8.206, rod:5.155, disp:'4.7 L', hp:271, tq:312, rpm:6000, rating:'gross', firing:'1-5-4-2-6-3-7-8', firingNote:'Standard Windsor' },
+  '302': { years:'1968–2001', bore:4.000, stroke:3.000, deck:8.206, rod:5.090, disp:'4.9 L', hp:225, tq:300, rpm:4600, rating:'net', firing:'1-5-4-2-6-3-7-8', firingNote:'Standard Windsor' },
+  '351': { years:'1969–96', bore:4.000, stroke:3.500, deck:9.503, rod:5.956, disp:'5.8 L', hp:290, tq:385, rpm:4600, rating:'gross', firing:'1-3-7-2-6-5-4-8', firingNote:'HO / 351W' }
+};
+const GAUGE_MAX = 320;
+const state = { engine:'302', units:'sae' };
+const mm = v => (v * 25.4).toFixed(1);
+const nm = v => Math.round(v * 1.3558);
+
+/* ---------- gauge ---------- */
+function buildTicks(){
+  const g = $('#gaugeTicks');
+  if (!g) return;
+  for (let v = 0; v <= GAUGE_MAX; v += 20){
+    const major = v % 80 === 0;
+    const a = (150 + (v / GAUGE_MAX) * 240) * Math.PI / 180;
+    const line = document.createElementNS(NS, 'line');
+    line.setAttribute('x1', 190 + Math.cos(a) * (major ? 114 : 118));
+    line.setAttribute('y1', 190 + Math.sin(a) * (major ? 114 : 118));
+    line.setAttribute('x2', 190 + Math.cos(a) * 124);
+    line.setAttribute('y2', 190 + Math.sin(a) * 124);
+    line.setAttribute('stroke', major ? '#3d5169' : '#22324a');
+    line.setAttribute('stroke-width', major ? 1.2 : 0.7);
+    g.appendChild(line);
+    if (major){
+      const t = document.createElementNS(NS, 'text');
+      t.setAttribute('x', 190 + Math.cos(a) * 100);
+      t.setAttribute('y', 190 + Math.sin(a) * 100 + 2.5);
+      t.setAttribute('text-anchor', 'middle');
+      t.setAttribute('fill', '#5d7089');
+      t.setAttribute('font-family', "'JetBrains Mono',monospace");
+      t.setAttribute('font-size', '7');
+      t.textContent = v;
+      g.appendChild(t);
+    }
+  }
+}
+
+function setEngine(key){
+  const e = ENGINES[key];
+  if (!e) return;
+  state.engine = key;
+
+  $$('.chip').forEach(c => {
+    const on = c.dataset.engine === key;
+    c.classList.toggle('on', on);
+    c.setAttribute('aria-pressed', on ? 'true' : 'false');
+  });
+
+  const t = Math.max(0, Math.min(1, e.hp / GAUGE_MAX));
+  $('#needle').setAttribute('transform', `rotate(${-120 + t * 240} 190 190)`);
+  $('#gaugeArc').setAttribute('stroke-dasharray', `${(t * 100).toFixed(2)} 100`);
+  $('#gaugeHp').textContent = e.hp;
+  $('#gaugeRpm').textContent = `@ ${e.rpm.toLocaleString('en-US')} RPM`;
+  $('#gaugeYears').textContent = e.years;
+  $('#gaugeRating').textContent = e.rating === 'gross' ? 'SAE gross' : 'SAE net';
+  $('#ratingBadge').textContent = e.rating.toUpperCase();
+  $('#gaugeTq').textContent = state.units === 'sae' ? `${e.tq} lb-ft` : `${nm(e.tq)} Nm`;
+  $('#gaugeDesc').textContent = `${key === '351' ? '351W' : key} factory rating: ${e.hp} horsepower at ${e.rpm.toLocaleString('en-US')} rpm and ${e.tq} lb-ft, SAE ${e.rating}.`;
+  $('#engineStatus').textContent = `${key === '351' ? '351W' : key} selected. ${e.hp} horsepower, ${e.tq} lb-ft, ${e.years}.`;
+
+  const sae = state.units === 'sae';
+  $('#kpiBore').textContent = sae ? `${e.bore.toFixed(3)} in` : `${mm(e.bore)} mm`;
+  $('#kpiBoreSub').textContent = sae ? `${mm(e.bore)} mm` : `${e.bore.toFixed(3)} in`;
+  $('#kpiStroke').textContent = sae ? `${e.stroke.toFixed(3)} in` : `${mm(e.stroke)} mm`;
+  $('#kpiStrokeSub').textContent = sae ? `${mm(e.stroke)} mm` : `${e.stroke.toFixed(3)} in`;
+  $('#kpiDeck').textContent = sae ? `${e.deck.toFixed(3)} in` : `${mm(e.deck)} mm`;
+  $('#kpiDeckSub').textContent = sae ? `${mm(e.deck)} mm` : `${e.deck.toFixed(3)} in`;
+  $('#kpiFiring').textContent = e.firing;
+  $('#kpiFiringSub').textContent = e.firingNote;
+
+  $$('#specs [data-col]').forEach(el => {
+    el.classList.toggle('is-active', el.dataset.col === key);
+  });
+}
+
+function applyUnits(){
+  $$('[data-sae][data-metric]').forEach(el => {
+    el.textContent = state.units === 'sae' ? el.dataset.sae : el.dataset.metric;
+  });
+  $$('.unit-btn').forEach(b => {
+    const on = b.dataset.units === state.units;
+    b.classList.toggle('on', on);
+    b.setAttribute('aria-pressed', on ? 'true' : 'false');
+  });
+  setEngine(state.engine);
+}
+
+/* ---------- blueprint hotspots ---------- */
+const DETAILS = {
+  intake: { k:'Callout 01', title:'Intake manifold', body:'The 302 used iron 2-barrel and 4-barrel intakes, then EFI upper and lower manifolds from 1986. The 351W intake is wider because the deck is taller — the manifolds do not interchange.', spec:'302: 23–25 ft-lb · 351W: 23–25 ft-lb' },
+  deck: { k:'Callout 02', title:'Deck height', body:'8.206 in on the 221 through 302. The 351W sits 1.297 in taller at 9.503 in from 1971. Deck height sets how much stroke and rod length will fit under the heads.', spec:'221–302: 8.206 in · 351W: 9.480 / 9.503 in' },
+  timing: { k:'Callout 03', title:'Timing cover and cam', body:'The front cover carries the water pump and seals the timing chain. The cam thrust plate and sprocket bolt live behind it. Cam end play is set here, not by the cover.', spec:'Sprocket 40–45 ft-lb · thrust plate 8–10 ft-lb' },
+  damper: { k:'Callout 04', title:'Harmonic damper', body:'The damper controls torsional vibration at the front of the crank. It is a press fit with a key; never hammer it on, and never use it to hold the crank while you torque the bolt.', spec:'70–90 ft-lb · hold the flywheel, not the damper' },
+  pan: { k:'Callout 05', title:'Oil pan and pickup', body:'Rear-sump pans dominate the 302. The pickup must sit 1/4–3/8 in off the pan floor, and the pan rail uses small bolts that crush a gasket if over-torqued.', spec:'Pan 7–11 ft-lb · pump 23–28 ft-lb' },
+  rocker: { k:'Callout 06', title:'Valve cover and rockers', body:'Stamped steel covers distort long before the bolt reaches spec. The rocker nuts set hydraulic preload or solid lash — torque them only after the adjustment is right.', spec:'Covers 3–5 ft-lb · rocker nuts 17–23 ft-lb' }
+};
+
+function showDetail(key){
+  const d = DETAILS[key];
+  if (!d) return;
+  $$('.hotspot').forEach(h => h.classList.toggle('active', h.dataset.detail === key));
+  $('#bpDetail .k').textContent = d.k;
+  $('#bpDetailTitle').textContent = d.title;
+  $('#bpDetailBody').textContent = d.body;
+  $('#bpDetailSpec').textContent = d.spec;
+}
+
+/* ---------- toast + clipboard ---------- */
+let toastTimer;
+function toast(msg){
+  const el = $('#toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove('show'), 1800);
+}
+async function copyText(text, msg){
+  try {
+    if (navigator.clipboard && window.isSecureContext){
+      await navigator.clipboard.writeText(text);
+    } else {
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      ta.remove();
+    }
+    toast(msg || 'Copied');
+  } catch (err) {
+    toast('Copy failed — select the value manually');
+  }
+}
+
+/* ---------- torque table ---------- */
+let torqueCat = 'all';
+function filterTorque(){
+  const q = ($('#tqSearch').value || '').trim().toLowerCase();
+  $$('#torqueTable tbody tr').forEach(tr => {
+    const catOk = torqueCat === 'all' ? true : (torqueCat === '351' ? tr.dataset.diff === '1' : tr.dataset.cat === torqueCat);
+    const qOk = !q || tr.textContent.toLowerCase().includes(q);
+    tr.classList.toggle('hide', !(catOk && qOk));
+  });
+}
+
+/* ---------- assembly progress ---------- */
+const PKEY = 'sbf302build';
+let done = [];
+try { done = JSON.parse(localStorage.getItem(PKEY) || '[]').map(String); } catch (err) { done = []; }
+
+function syncBuild(){
+  $$('.check').forEach(cb => { cb.checked = done.includes(cb.dataset.check); });
+  const n = done.length;
+  $('#progressFill').style.width = `${(n / 10) * 100}%`;
+  $('#progressCount').textContent = `${n} / 10`;
+  $('#progressBar').setAttribute('aria-valuenow', String(n));
+}
+
+/* ---------- init ---------- */
+buildTicks();
+applyUnits();
+
+$$('.fbtn,.rt').forEach(b => b.setAttribute('aria-pressed', b.classList.contains('on') ? 'true' : 'false'));
+
+$$('.table-wrap').forEach(w => {
+  const cap = w.querySelector('caption');
+  if (cap) w.setAttribute('aria-label', cap.textContent.trim());
+  w.setAttribute('role', 'region');
+  const sync = () => { w.tabIndex = w.scrollWidth > w.clientWidth + 1 ? 0 : -1; };
+  sync();
+  addEventListener('resize', sync);
+});
+const timeline = $('.timeline');
+if (timeline) timeline.tabIndex = 0;
+
+$$('.chip').forEach(chip => {
+  chip.addEventListener('click', () => setEngine(chip.dataset.engine));
+});
+
+$$('.unit-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    state.units = btn.dataset.units;
+    applyUnits();
+  });
+});
+
+$$('.hotspot').forEach(h => {
+  const fire = () => showDetail(h.dataset.detail);
+  h.addEventListener('click', fire);
+  h.addEventListener('keydown', ev => {
+    if (ev.key === 'Enter' || ev.key === ' '){ ev.preventDefault(); fire(); }
+  });
+});
+
+$$('.fbtn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    torqueCat = btn.dataset.cat;
+    $$('.fbtn').forEach(b => {
+      const on = b === btn;
+      b.classList.toggle('on', on);
+      b.setAttribute('aria-pressed', on ? 'true' : 'false');
+    });
+    filterTorque();
+  });
+});
+$('#tqSearch').addEventListener('input', filterTorque);
+
+$$('.tq-btn').forEach(btn => {
+  btn.addEventListener('click', () => copyText(btn.dataset.copy, 'Torque copied'));
+});
+
+$('#copyAll').addEventListener('click', () => {
+  const rows = $$('#torqueTable tbody tr:not(.hide)').map(tr =>
+    Array.from(tr.children).map(c => c.textContent.trim()).join(' | ')
+  );
+  if (!rows.length){ toast('Nothing visible to copy'); return; }
+  copyText(rows.join('\n'), `Copied ${rows.length} rows`);
+});
+
+$$('.rt').forEach(btn => {
+  btn.addEventListener('click', () => {
+    $$('.rt').forEach(b => {
+      const on = b === btn;
+      b.classList.toggle('on', on);
+      b.setAttribute('aria-pressed', on ? 'true' : 'false');
+    });
+    const r = btn.dataset.rating;
+    $$('#barList .bar-row').forEach(row => {
+      row.style.display = (r === 'all' || row.dataset.rating === r) ? '' : 'none';
+    });
+  });
+});
+
+$$('.check').forEach(cb => {
+  cb.addEventListener('click', ev => ev.stopPropagation());
+  cb.addEventListener('change', () => {
+    done = $$('.check').filter(c => c.checked).map(c => c.dataset.check);
+    try { localStorage.setItem(PKEY, JSON.stringify(done)); } catch (err) {}
+    syncBuild();
+  });
+});
+syncBuild();
+
+$('#resetProgress').addEventListener('click', () => {
+  done = [];
+  try { localStorage.removeItem(PKEY); } catch (err) {}
+  syncBuild();
+  toast('Build progress reset');
+});
+
+$('#printBtn').addEventListener('click', () => window.print());
+
+$('#jump').addEventListener('change', ev => {
+  if (ev.target.value) location.hash = ev.target.value;
+});
+
+/* scroll progress */
+const bar = $('#scrollbar');
+addEventListener('scroll', () => {
+  const h = document.documentElement;
+  const max = h.scrollHeight - h.clientHeight;
+  bar.style.width = `${max > 0 ? (h.scrollTop / max) * 100 : 0}%`;
+}, { passive: true });
+
+/* scrollspy */
+const links = $$('.nav-link');
+const sections = links.map(a => document.getElementById(a.getAttribute('href').slice(1))).filter(Boolean);
+if ('IntersectionObserver' in window && sections.length){
+  const spy = new IntersectionObserver(entries => {
+    entries.forEach(en => {
+      if (!en.isIntersecting) return;
+      links.forEach(a => a.classList.toggle('active', a.getAttribute('href') === `#${en.target.id}`));
+    });
+  }, { rootMargin: '-45% 0px -50% 0px', threshold: 0 });
+  sections.forEach(s => spy.observe(s));
+}
+</script>
+</body>
+</html>
